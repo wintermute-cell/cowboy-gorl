@@ -1,0 +1,10 @@
+{
+    "ScreenWidth": 1280,
+    "ScreenHeight": 720,
+    "RenderWidth": 1280,
+    "RenderHeight": 720,
+    "TargetFps": 144,
+    "Fullscreen": false,
+    "MouseSensitivity": 1.0,
+    "SoundVolume": 0.5
+}
