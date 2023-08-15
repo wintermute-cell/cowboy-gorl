@@ -8,7 +8,6 @@ import (
 	"os"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
-	// Testkommentar
 )
 
 var (
