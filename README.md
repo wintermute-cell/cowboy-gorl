@@ -41,8 +41,11 @@ If no path is given, the following defaults apply: `./pkg/settings/settings.go`,
 
 > Note: Review changes and test after running.
 
-## Inspiration
 
+## TODO
+See kanban: https://trello.com/b/D51PBmQU/cowboy-gorl
+
+## Inspiration
 - Pinterest: https://www.pinterest.de/kjuliusg/cowboy-gorl/
 - Games:
     - Darkwood
