@@ -40,3 +40,16 @@ If no path is given, the following defaults apply: `./pkg/settings/settings.go`,
 `./assets/settings.json`.
 
 > Note: Review changes and test after running.
+
+## Inspiration
+
+- Pinterest: https://www.pinterest.de/kjuliusg/cowboy-gorl/
+- Games:
+    - Darkwood
+    - Rainword
+
+- Youtube
+    - MonsterGarden (https://www.youtube.com/@monlenz)
+
+- Books
+    - The Dark Tower (King)
