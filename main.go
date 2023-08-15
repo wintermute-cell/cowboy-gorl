@@ -1,13 +1,14 @@
 package main
 
 import (
-    "cowboy-gorl/pkg/settings"
 	"cowboy-gorl/pkg/render"
 	"cowboy-gorl/pkg/scenes"
+	"cowboy-gorl/pkg/settings"
 	"log"
 	"os"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
+	// Testkommentar
 )
 
 var (
@@ -32,7 +33,7 @@ func main() {
 
 	// PRE-INIT
 	settings_path := "settings.json"
-    err := settings.LoadSettings(settings_path)
+	err := settings.LoadSettings(settings_path)
 	if err != nil {
 		settings.FallbackSettings()
 		InfoLogger.Printf("Failed to load settings from '%s', using fallback!",
@@ -47,9 +48,9 @@ func main() {
 
 	rl.SetTargetFPS(int32(settings.CurrentSettings().TargetFps))
 
-    render.Init(
-        settings.CurrentSettings().RenderWidth,
-        settings.CurrentSettings().RenderHeight)
+	render.Init(
+		settings.CurrentSettings().RenderWidth,
+		settings.CurrentSettings().RenderHeight)
 
 	dev_scene := scenes.DevScene{}
 	dev_scene.Init()
@@ -58,19 +59,18 @@ func main() {
 	// GAME LOOP
 	for !rl.WindowShouldClose() {
 		rl.ClearBackground(rl.Black)
-        render.BeginCustomRender()
-        rl.BeginDrawing()
-            rl.ClearBackground(rl.DarkGreen)
+		render.BeginCustomRender()
+		rl.BeginDrawing()
+		rl.ClearBackground(rl.DarkGreen)
 
-            // Draw GUI
-            //dev_scene.DrawGUI()
+		// Draw GUI
+		//dev_scene.DrawGUI()
 
-            dev_scene.Draw()
-            rl.DrawFPS(10, 10);
-            rl.DrawGrid(10, 1.0);
+		dev_scene.Draw()
+		rl.DrawFPS(10, 10)
+		rl.DrawGrid(10, 1.0)
 
-
-        rl.EndDrawing()
-        render.EndCustomRender()
+		rl.EndDrawing()
+		render.EndCustomRender()
 	}
 }
