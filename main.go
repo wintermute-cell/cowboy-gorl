@@ -1,43 +1,40 @@
 package main
 
 import (
+	"cowboy-gorl/pkg/logging"
 	"cowboy-gorl/pkg/render"
 	"cowboy-gorl/pkg/scenes"
 	"cowboy-gorl/pkg/settings"
-	"log"
-	"os"
+
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 var (
-	WarningLogger *log.Logger
-	InfoLogger    *log.Logger
-	ErrorLogger   *log.Logger
+	Log *logging.Log = new(logging.Log)
 )
 
-func log_init() {
-	file, err := os.OpenFile("logs.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	InfoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-	WarningLogger = log.New(file, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
-	ErrorLogger = log.New(file, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
-}
-
 func main() {
-	log_init()
 
 	// PRE-INIT
 	settings_path := "settings.json"
 	err := settings.LoadSettings(settings_path)
 	if err != nil {
 		settings.FallbackSettings()
-		InfoLogger.Printf("Failed to load settings from '%s', using fallback!",
-			settings_path)
+		
+		// FIXME: kann nicht geloggt werden, da der logging-Speicherort erst
+		// aus den Settings gelesen werden muss!
+		// FIXME: eigentlich soll laut issue ja logging.go sich den filepath 
+		// aus den settings selbst holen, dann wuedern wir das hier umgehen,
+		// zumindest wenn das so gemeint ist dass man den log_path aus der
+		// settings .json holen soll
+		//InfoLogger.Printf("Failed to load settings from '%s', using fallback!",
+		//	settings_path)
 	}
+
+ 	// FIXME: liesst nicht korrekt auf json
+	Log.Init(settings.CurrentSettings().LogPath)
+	Log.Info("Logges is set up") // FIXME: nur ein Beispiel
 
 	// INITIALIZATION
 	rl.InitWindow(

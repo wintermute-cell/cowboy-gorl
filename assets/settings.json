@@ -6,5 +6,6 @@
     "TargetFps": 144,
     "Fullscreen": false,
     "MouseSensitivity": 1.0,
-    "SoundVolume": 0.5
+    "SoundVolume": 0.5,
+    "LogPath":"hanswurst"
 }
