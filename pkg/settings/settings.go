@@ -18,7 +18,7 @@ type GameSettings struct {
 	// Audio
 	SoundVolume float32 `json:"soundVolume"` // 0.5
 	// Logging
-	LogPath string `json:"logPath"`			 // FIXME: geht das?
+	LogPath string `json:"logPath"`			 // logs/
 }
 
 var (
@@ -40,7 +40,7 @@ func FallbackSettings() {
 		Fullscreen:  false,
 		MouseSensitivity:  1.0,
 		SoundVolume:  0.5,
-		LogPath: "logs/", // FIXME:
+		LogPath:  "logs/",
 	}
 }
 

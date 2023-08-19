@@ -22,7 +22,6 @@ func Init(render_width int, render_height int) {
 			float32(render_width),
 			float32(render_height)),
 	}
-
 }
 
 // positioning functions
