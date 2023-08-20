@@ -13,7 +13,9 @@ var _ Scene = (*DevScene)(nil)
 //
 type DevScene struct {
     background entities.BackgroundEntity
+    rails entities.BackgroundEntity
     train entities.TrainEntity
+    ui entities.GameplayUIEntity
 }
 
 func (scn *DevScene) Init() {
@@ -29,27 +31,44 @@ func (scn *DevScene) Init() {
         },
         []float32{
             0.0,
-            0.1,
-            0.2,
-            0.5,
-            0.8,
-            1.0,
+            0.1 * 2.5,
+            0.2 * 2.5,
+            0.5 * 2.5,
+            0.8 * 2.5,
+            1.0 * 2.5,
         })
+
+    scn.rails = entities.BackgroundEntity{}
+    scn.background.SetLayers(
+        []string{
+            "sprites/rails.png",
+        },
+        []float32{
+            10.0,
+        })
+
     scn.train = entities.TrainEntity{}
     scn.train.Init()
+
+    scn.ui.Init()
+
     logging.Info("DevScene initialized.")
 }
 
 func (scn *DevScene) Deinit() {
     scn.background.Deinit()
+    scn.rails.Deinit()
+    scn.train.Deinit()
+    scn.ui.Deinit()
     logging.Info("DevScene de-initialized.")
 }
 
 func (scn *DevScene) DrawGUI() {
-    // Draw the GUI for the scene
+    scn.ui.Update()
 }
 
 func (scn *DevScene) Draw() {
     scn.background.Update()
+    scn.rails.Update()
     scn.train.Update()
 }
