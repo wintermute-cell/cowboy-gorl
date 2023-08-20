@@ -17,6 +17,8 @@ type GameSettings struct {
 	MouseSensitivity float32 `json:"mouseSensitivity"` // 1.0
 	// Audio
 	SoundVolume float32 `json:"soundVolume"` // 0.5
+	// Logging
+	LogPath string `json:"logPath"`			 // logs/
 }
 
 var (
@@ -38,6 +40,7 @@ func FallbackSettings() {
 		Fullscreen:  false,
 		MouseSensitivity:  1.0,
 		SoundVolume:  0.5,
+		LogPath:  "logs/",
 	}
 }
 

@@ -1,7 +1,8 @@
 package scenes
 
 import (
-    "cowboy-gorl/pkg/entities"
+	"cowboy-gorl/pkg/entities"
+	"cowboy-gorl/pkg/logging"
 )
 
 // This checks at compile time if the interface is implemented
@@ -34,10 +35,12 @@ func (scn *DevScene) Init() {
         })
     scn.train = entities.TrainEntity{}
     scn.train.Init()
+    logging.Info("DevScene initialized.")
 }
 
 func (scn *DevScene) Deinit() {
     scn.background.Deinit()
+    logging.Info("DevScene de-initialized.")
 }
 
 func (scn *DevScene) DrawGUI() {

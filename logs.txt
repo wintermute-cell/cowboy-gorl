@@ -1,2 +1,0 @@
-INFO: 2023/08/15 19:54:58 main.go:38: Failed to load settings from 'settings.json', using fallback!
-INFO: 2023/08/15 19:55:10 main.go:38: Failed to load settings from 'settings.json', using fallback!
