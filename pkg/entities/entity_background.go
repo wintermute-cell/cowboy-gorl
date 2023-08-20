@@ -40,18 +40,22 @@ func (ent *BackgroundEntity) Update() {
     for i, layer := range ent.layers {
         ent.scroll_pos[i] -= ent.speeds[i]
 
-        // Calculate the scale factor for the texture
-        scaleX := render.Rs.RenderResolution.X / float32(layer.Width)
-        scaleY := render.Rs.RenderResolution.Y / float32(layer.Height)
-        scale := float32(math.Max(float64(scaleX), float64(scaleY)))
+        // Calculate the scale factor for the texture based on height
+        // This ensures the layer is not stretched vertically
+        scale := render.Rs.RenderResolution.Y / float32(layer.Height)
 
-        // Reset scroll if necessary
-        if ent.scroll_pos[i] <= -float32(layer.Width)*scale {
-            ent.scroll_pos[i] = 0
+        // Determine how many times the texture needs to be drawn to cover the screen
+        repeatCount := int(math.Ceil(float64(render.Rs.RenderResolution.X) / (float64(layer.Width) * float64(scale))))
+
+        // Ensure that textures are always in the right position to fill the screen
+        for ent.scroll_pos[i] <= -float32(layer.Width)*scale {
+            ent.scroll_pos[i] += float32(layer.Width) * scale
         }
 
-        // Draw each layer twice, taking into account its speed for the parallax effect
-        rl.DrawTextureEx(layer, rl.NewVector2(ent.scroll_pos[i], 0), 0.0, scale, rl.White)
-        rl.DrawTextureEx(layer, rl.NewVector2(float32(layer.Width)*scale + ent.scroll_pos[i], 0), 0.0, scale, rl.White)
+        // Draw each layer, taking into account its speed for the parallax effect
+        for j := 0; j < repeatCount+2; j++ {  // Draw one more layer to ensure no gaps
+            xPosition := ent.scroll_pos[i] + float32(j)*float32(layer.Width)*scale
+            rl.DrawTextureEx(layer, rl.NewVector2(xPosition, 0), 0.0, scale, rl.White)
+        }
     }
 }

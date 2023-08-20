@@ -20,11 +20,12 @@ func (scn *DevScene) Init() {
     scn.background = entities.BackgroundEntity{}
     scn.background.SetLayers(
         []string{
-            "backgrounds/parallax-mountain/parallax-mountain-bg.png",
-            "backgrounds/parallax-mountain/parallax-mountain-montain-far.png",
-            "backgrounds/parallax-mountain/parallax-mountain-mountains.png",
-            "backgrounds/parallax-mountain/parallax-mountain-trees.png",
-            "backgrounds/parallax-mountain/parallax-mountain-foreground-trees.png",
+            "backgrounds/super-parallax-mountains/sky.png",
+            "backgrounds/super-parallax-mountains/far-clouds.png",
+            "backgrounds/super-parallax-mountains/near-clouds.png",
+            "backgrounds/super-parallax-mountains/far-mountains.png",
+            "backgrounds/super-parallax-mountains/mountains.png",
+            "backgrounds/super-parallax-mountains/trees.png",
         },
         []float32{
             0.0,
@@ -32,6 +33,7 @@ func (scn *DevScene) Init() {
             0.2,
             0.5,
             0.8,
+            1.0,
         })
     scn.train = entities.TrainEntity{}
     scn.train.Init()
