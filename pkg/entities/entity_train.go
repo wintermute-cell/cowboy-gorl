@@ -37,4 +37,3 @@ func (ent *TrainEntity) Update() {
         1.8, // scale
         rl.White)
 }
-

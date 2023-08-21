@@ -2,6 +2,7 @@ package entities
 
 import (
 	"cowboy-gorl/pkg/render"
+	"fmt"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -15,6 +16,13 @@ var _ Entity = (*GameplayUIEntity)(nil)
 //
 type GameplayUIEntity struct {
     // Add fields here for any state that the entity should keep track of
+    inventory *InventoryEntity
+}
+
+func NewGameplayUiEntity(inventory *InventoryEntity) (GameplayUIEntity) {
+    new_ent := GameplayUIEntity{}
+    new_ent.inventory = inventory
+    return new_ent
 }
 
 func (ent *GameplayUIEntity) Init() {
@@ -41,20 +49,14 @@ func (ent *GameplayUIEntity) Update() {
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
 
     offset += 70
-    rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Repair");
+    rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Coal");
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 20)
-    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), "12")
+    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), fmt.Sprintf("%v", ent.inventory.Coal_ore))
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
 
     offset += 70
-    rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Collect");
+    rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Iron");
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 20)
-    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), "14")
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
-
-    offset += 70
-    rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Craft");
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 20)
-    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), "6")
+    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), fmt.Sprintf("%v", ent.inventory.Iron_ore))
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
 }
