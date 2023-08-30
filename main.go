@@ -6,7 +6,7 @@ import (
 	"cowboy-gorl/pkg/scenes"
 	"cowboy-gorl/pkg/settings"
 
-
+	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -41,7 +41,16 @@ func main() {
 		settings.CurrentSettings().RenderHeight)
     logging.Info("Custom rendering initialized.")
 
-    // loading scenes ( don't forget to defer the Deinit()!!! )
+    // initialize the audio device
+    rl.InitAudioDevice()
+    defer rl.CloseAudioDevice()
+
+    // raygui
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_COLOR_NORMAL, 0xffffffff)
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
+
+    // SCENES (this part MUST come after the system/rl initialization)
+    // ( don't forget to defer the Deinit()!!! )
 	dev_scene := scenes.DevScene{}
 	dev_scene.Init()
 	defer dev_scene.Deinit()
@@ -49,22 +58,25 @@ func main() {
 	// GAME LOOP
 	for !rl.WindowShouldClose() {
 		rl.ClearBackground(rl.Black) // clearing the whole background, even behind the main rendertex
-		render.BeginCustomRender()
 
-        // BEGIN: DRAW STEP
-            rl.BeginDrawing()
+		render.BeginCustomRender()
+        rl.BeginDrawing()
+
             rl.ClearBackground(rl.DarkGreen) // clear the main rendertex
 
-            // Draw GUI
-            //dev_scene.DrawGUI()
-
+            // Draw Content
             dev_scene.Draw()
-            rl.DrawFPS(10, 10)
-            rl.DrawGrid(10, 1.0)
 
-            rl.EndDrawing()
-        // END: DRAW STEP
+            // Draw GUI
+            dev_scene.DrawGUI()
 
-		render.EndCustomRender()
+        render.EndCustomRender()
+
+        // Draw Debug Info
+        rl.DrawFPS(10, 10)
+        rl.DrawGrid(10, 1.0)
+
+        rl.EndDrawing()
+
 	}
 }
