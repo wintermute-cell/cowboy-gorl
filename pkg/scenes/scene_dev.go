@@ -23,6 +23,8 @@ type DevScene struct {
     ui entities.GameplayUIEntity
     ore_clusters []*entities.OreClusterEntity
 
+    event_manager entities.EventmanagerEntity
+
     // ore spawner
 	spawn_timer       float32
 	spawn_interval    float32
@@ -33,6 +35,11 @@ type DevScene struct {
     drain_timer float32
     drain_interval float32
     // NOTE: Maybe it would be nice to abstract timers into their own package or entity
+
+    // event timer
+    event_timer float32
+    event_interval  float32
+    show_event bool
 }
 
 func (scn *DevScene) Init() {
@@ -75,12 +82,16 @@ func (scn *DevScene) Init() {
     scn.ui = entities.NewGameplayUiEntity(&scn.inventory)
     scn.ui.Init()
 
-
     scn.spawn_timer = 0
 	scn.spawn_interval = scn.generateSpawnInterval() // Initial spawn interval
 	scn.next_spawn_type = scn.generateRandomOreType()
 
     scn.drain_interval = 1.0 // burn coal every second
+
+    scn.event_manager.Init()
+    scn.event_manager = entities.EventmanagerEntity{
+        Inventory: &scn.inventory,
+    }
 
     logging.Info("DevScene initialized.")
 }
@@ -94,6 +105,7 @@ func (scn *DevScene) Deinit() {
     for _, cluster := range scn.ore_clusters {
         cluster.Deinit()
     }
+    scn.event_manager.Deinit()
     logging.Info("DevScene de-initialized.")
 }
 
@@ -130,6 +142,7 @@ func (scn *DevScene) Draw() {
         scn.drain_timer = 0.0
         scn.inventory.Coal_ore -= 1
     }
+    scn.event_manager.Update()
 }
 
 

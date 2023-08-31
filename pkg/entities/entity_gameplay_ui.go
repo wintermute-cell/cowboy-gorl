@@ -45,7 +45,7 @@ func (ent *GameplayUIEntity) Update() {
 
     rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Pops");
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 20)
-    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), "44")
+    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), fmt.Sprintf("%v", ent.inventory.Pops))
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
 
     offset += 70
@@ -58,5 +58,17 @@ func (ent *GameplayUIEntity) Update() {
     rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Iron");
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 20)
     rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), fmt.Sprintf("%v", ent.inventory.Iron_ore))
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
+
+    offset += 70
+    rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Dynamite");
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 20)
+    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), fmt.Sprintf("%v", ent.inventory.Dynamite))
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
+
+    offset += 70
+    rg.Label(rl.NewRectangle(origin.X + 8 + offset, origin.Y + 6, 60, 24), "Food");
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 20)
+    rg.Label(rl.NewRectangle(origin.X + 14 + offset, origin.Y + 28, 60, 24), fmt.Sprintf("%v", ent.inventory.Food))
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
 }
