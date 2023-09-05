@@ -1,3 +1,12 @@
+// ---------------------------------
+// CRT Matthias Post Processing Shader
+// ---------------------------------
+// 
+// Works with the default Raylib vertex shader.
+// Worse performance than crt-lottes. Works with dedicated (but weak) GPU,
+// but tanks FPS with integrated GPU module.
+//
+
 #version 330
 
 #ifdef GL_ES
@@ -21,7 +30,6 @@ uniform COMPAT_PRECISION vec2 InputSize;
 #define TextureSize vec2(320, 240)
 #define InputSize vec2(320, 240)
 
-uniform sampler2D Texture;
 uniform sampler2D texture0;
 
 
@@ -50,7 +58,7 @@ out vec4 finalColor;
 #define hardBloomPix -1.5
 #define hardBloomScan -2.0
 #define bloomAmount 0.15
-#define shape 2.0
+#define shape 3.0
 
 #define DO_BLOOM
 
