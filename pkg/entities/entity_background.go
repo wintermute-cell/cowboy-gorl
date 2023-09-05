@@ -38,7 +38,7 @@ func (ent *BackgroundEntity) Deinit() {
 
 func (ent *BackgroundEntity) Update() {
     for i, layer := range ent.layers {
-        ent.scroll_pos[i] -= ent.speeds[i]
+        ent.scroll_pos[i] -= ent.speeds[i] * rl.GetFrameTime() * 100
 
         // Calculate the scale factor for the texture based on height
         // This ensures the layer is not stretched vertically
