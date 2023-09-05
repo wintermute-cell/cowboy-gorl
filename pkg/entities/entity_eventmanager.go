@@ -50,7 +50,7 @@ func (ent *EventmanagerEntity) Update() {
 		ent.show_event = true
         ent.current_decision_pair = getRandomDecisionPair()
 		ent.decision_timer = 8
-		ent.event_timer = float32(rand.Intn(8) + 0)
+		ent.event_timer = float32(rand.Intn(8) + 40)
         ent.decision_expired = false
 	}
 
@@ -82,8 +82,8 @@ func (ent *EventmanagerEntity) Update() {
 		}
 
         // Hard-coded positions for demonstration
-		firstPanelX, firstPanelY, panelWidth, panelHeight := 400, 200, 200, 50
-		secondPanelX, secondPanelY := firstPanelX, firstPanelY+60
+		firstPanelX, firstPanelY, panelWidth, panelHeight := 450, 80, 160, 80
+		secondPanelX, secondPanelY := firstPanelX, firstPanelY+130
 
         // Handle first decision
         if rg.Button(rl.NewRectangle(float32(firstPanelX), float32(firstPanelY), float32(panelWidth), float32(panelHeight)), "") {

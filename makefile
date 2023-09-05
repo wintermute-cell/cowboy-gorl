@@ -18,6 +18,11 @@ build:
 	cp -r assets/* $(BUILD_PATH)
 	go build -o $(BUILD_PATH)/$(PROJECT)-linux
 
+build-debug:
+	mkdir -p $(BUILD_PATH)
+	cp -r assets/* $(BUILD_PATH)
+	CGO_CFLAGS='-O0 -g' go build -a -v -gcflags="all=-N -l" -o $(BUILD_PATH)/$(PROJECT)-linux
+
 run:
 	cd $(BUILD_PATH); ./$(PROJECT)-linux
 

@@ -7,6 +7,7 @@ import (
 	"math/rand"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
+	rg "github.com/gen2brain/raylib-go/raygui"
 )
 
 // This checks at compile time if the interface is implemented
@@ -24,6 +25,7 @@ type DevScene struct {
     ore_clusters []*entities.OreClusterEntity
 
     event_manager entities.EventmanagerEntity
+    pop_manager entities.PopmanagerEntity
 
     // ore spawner
 	spawn_timer       float32
@@ -40,6 +42,9 @@ type DevScene struct {
     event_timer float32
     event_interval  float32
     show_event bool
+
+    construct_manager_visible bool
+    pop_manager_visible bool
 }
 
 func (scn *DevScene) Init() {
@@ -88,10 +93,18 @@ func (scn *DevScene) Init() {
 
     scn.drain_interval = 1.0 // burn coal every second
 
-    scn.event_manager.Init()
     scn.event_manager = entities.EventmanagerEntity{
         Inventory: &scn.inventory,
     }
+    scn.event_manager.Init()
+    scn.pop_manager = entities.PopmanagerEntity{
+        Scene_ore_clusters: &scn.ore_clusters,
+        Inventory: &scn.inventory,
+    }
+    scn.pop_manager.Init()
+
+    scn.construct_manager_visible = false
+    scn.pop_manager_visible = false
 
     logging.Info("DevScene initialized.")
 }
@@ -136,6 +149,18 @@ func (scn *DevScene) Draw() {
         }
 	}
 
+    if rg.Button(rl.NewRectangle(0, 10, 100, 16), "Construct") {
+        scn.construct_manager_visible = !scn.construct_manager_visible;
+        scn.pop_manager_visible = false;
+        logging.Info("Pressed Construct")
+    }
+
+    if rg.Button(rl.NewRectangle(0, 30, 100, 16), "Pops") {
+        scn.construct_manager_visible = false;
+        scn.pop_manager_visible = !scn.pop_manager_visible;
+        logging.Info("Pressed Pops")
+    }
+
     // handle regular resource drain. At the moment, this is just the engine burning coal
     scn.drain_timer += 1.0 * rl.GetFrameTime()
     if scn.drain_timer >= scn.drain_interval {
@@ -143,6 +168,13 @@ func (scn *DevScene) Draw() {
         scn.inventory.Coal_ore -= 1
     }
     scn.event_manager.Update()
+    // NOTE: not differentiation between a logic Update and a Draw is stupid.
+    // Things should be able to do logic updates even when not visible
+    // OR, one could say that the visible part of pop_manager should be it's own
+    // entity, that one could toggle separately.
+    if scn.pop_manager_visible {
+        scn.pop_manager.Update()
+    }
 }
 
 

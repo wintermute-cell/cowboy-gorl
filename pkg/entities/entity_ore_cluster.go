@@ -1,9 +1,9 @@
 package entities
 
 import (
-	"cowboy-gorl/pkg/render"
+    "cowboy-gorl/pkg/render"
 
-	rl "github.com/gen2brain/raylib-go/raylib"
+    rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 // This checks at compile time if the interface is implemented
@@ -59,6 +59,10 @@ func (ent *OreClusterEntity) Update() {
     }
 }
 
+func (ent *OreClusterEntity) GetOreType() OreType {
+    return ent.ore_type
+}
+
 // NOTE: Maybe it would be better to separate this into a separate, generic ClickableEntity,
 // and each OreClusterEntity has a sub entity of this type.
 func (ent *OreClusterEntity) HandleClick() {
@@ -73,7 +77,7 @@ func (ent *OreClusterEntity) HandleClick() {
     // TODO: could make this ore type dependant if we had more sounds
     rl.PlaySound(ent.interaction_sound)
 
-    // NOTE: it would be nice to also play a little animation here. we could do that by modifying the 
+    // NOTE: it would be nice to also play a little animation here. we could do that by modifying the
     // xpos and ypos over time. but that would be way easier, if animation was abstracted. and that again would
     // be way easier, if position was abstracted, or at least standardized. maybe we need another sub-structure below
     // entities? maybe "components"? (I think rerolling to ECS would be unneccesary, just a name coincidence)

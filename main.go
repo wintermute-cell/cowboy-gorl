@@ -46,8 +46,15 @@ func main() {
     defer rl.CloseAudioDevice()
 
     // raygui
+    font := rl.LoadFont("fonts/alagard.png")
+    rl.SetTextureFilter(font.Texture, rl.FilterPoint);
+    rg.SetFont(font)
     rg.SetStyle(rg.DEFAULT, rg.TEXT_COLOR_NORMAL, 0xffffffff)
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
+    rg.SetStyle(rg.DEFAULT, rg.BASE_COLOR_NORMAL, 0xaa7a39ff)
+    rg.SetStyle(rg.DEFAULT, rg.BACKGROUND_COLOR, 0xca9a39ff)
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(font.BaseSize))
+    rg.SetStyle(rg.DEFAULT, rg.BORDER_WIDTH, 0)
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_SPACING, 2)
 
     // SCENES (this part MUST come after the system/rl initialization)
     // ( don't forget to defer the Deinit()!!! )
@@ -58,24 +65,26 @@ func main() {
 	// GAME LOOP
 	for !rl.WindowShouldClose() {
 		rl.ClearBackground(rl.Black) // clearing the whole background, even behind the main rendertex
-		render.BeginCustomRender()
 
-        // BEGIN: DRAW STEP
-            rl.BeginDrawing()
+		render.BeginCustomRender()
+        rl.BeginDrawing()
             rl.ClearBackground(rl.DarkGreen) // clear the main rendertex
 
             // Draw Content
             dev_scene.Draw()
+            //rl.DrawTextEx(font, "Some Text", rl.NewVector2(0, 0), float32(font.BaseSize)*2.0, 2, rl.White)
+            //rg.Label(rl.NewRectangle(0, 32, 200, 16), "Some Text");
 
             // Draw GUI
             dev_scene.DrawGUI()
 
-            rl.DrawFPS(10, 10)
-            rl.DrawGrid(10, 1.0)
+        render.EndCustomRender()
 
-            rl.EndDrawing()
-        // END: DRAW STEP
+        // Draw Debug Info
+        rl.DrawFPS(10, 10)
+        rl.DrawGrid(10, 1.0)
 
-		render.EndCustomRender()
+        rl.EndDrawing()
+
 	}
 }

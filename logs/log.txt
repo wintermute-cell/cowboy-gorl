@@ -1,0 +1,6 @@
+INFO: 2023/09/05 15:08:48 main.go:23: Logging initialized
+WARN: 2023/09/05 15:08:48 main.go:27: Settings loading unsuccessful, using fallback.
+INFO: 2023/09/05 15:08:48 render.go:71: Custom Rendering Environment initialized.
+INFO: 2023/09/05 15:08:48 main.go:42: Custom rendering initialized.
+INFO: 2023/09/05 15:08:48 scene_dev.go:109: DevScene initialized.
+INFO: 2023/09/05 15:08:51 scene_dev.go:122: DevScene de-initialized.

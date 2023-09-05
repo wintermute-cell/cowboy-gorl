@@ -18,7 +18,7 @@ type InventoryEntity struct {
 
 func (ent *InventoryEntity) Init() {
     ent.Coal_ore = 100
-    ent.Pops = 44
+    ent.Pops = 4
 }
 
 func (ent *InventoryEntity) Deinit() {
