@@ -35,6 +35,7 @@ type RenderState struct {
 	RenderScale      rl.Vector2
 	MinScale         float32
 	Crtshader        rl.Shader
+    lastScreenHeight int32
 }
 
 var Rs RenderState
@@ -46,13 +47,10 @@ func Init(render_width int, render_height int) {
 			float32(render_height)),
 	}
 
-	Rs.RenderScale = rl.Vector2{
-		X: float32(rl.GetScreenWidth()) / Rs.RenderResolution.X,
-		Y: float32(rl.GetScreenHeight()) / Rs.RenderResolution.Y,
-	}
-	Rs.MinScale = float32(math.Min(
-		float64(Rs.RenderScale.X),
-		float64(Rs.RenderScale.Y)))
+    // this is used to detect if the screen is resized
+    Rs.lastScreenHeight = int32(rl.GetScreenHeight())
+
+    recalcScaleFactor()
 
 	// create the primary render texture. all sprites will be drawn directly
 	// to this texture.
@@ -91,8 +89,14 @@ func PY(percentage_position float32) int32 {
 }
 
 func BeginCustomRender() {
+    if Rs.lastScreenHeight != int32(rl.GetScreenHeight()) {
+        recalcScaleFactor()
+        Rs.lastScreenHeight = int32(rl.GetScreenHeight())
+    }
+
 	// adjust mouse coordinates so that they match with the render resolution,
 	// not the screen size.
+    // NOTE: We might be able to move the following into recalcScaleFactor():
 	rl.SetMouseOffset(int(-(float32(rl.GetScreenWidth())-Rs.RenderResolution.X*Rs.MinScale)*0.5),
 		int(-(float32(rl.GetScreenHeight())-Rs.RenderResolution.Y*Rs.MinScale)*0.5))
 	rl.SetMouseScale(1/Rs.MinScale, 1/Rs.MinScale)
@@ -147,4 +151,14 @@ func EndCustomRender() {
 		rl.Vector2{X: 0, Y: 0}, 0, rl.White,
 	)
 	rl.EndShaderMode()
+}
+
+func recalcScaleFactor() {
+	Rs.RenderScale = rl.Vector2{
+		X: float32(rl.GetScreenWidth()) / Rs.RenderResolution.X,
+		Y: float32(rl.GetScreenHeight()) / Rs.RenderResolution.Y,
+	}
+	Rs.MinScale = float32(math.Min(
+		float64(Rs.RenderScale.X),
+		float64(Rs.RenderScale.Y)))
 }
