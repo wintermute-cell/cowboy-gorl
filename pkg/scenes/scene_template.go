@@ -14,6 +14,7 @@ type TemplateScene struct {
     // Required fields
     entity_manager *entities.EntityManager
 
+    // Custom Fields
     // Add fields here for any state that the scene should keep track of
     // ...
 }

@@ -13,6 +13,7 @@ type GameSettings struct {
 	RenderHeight int  `json:"renderHeight"` // 480
 	TargetFps    int  `json:"targetFps"`    // 144
 	Fullscreen   bool `json:"fullscreen"`   // false
+    EnableCrtEffect bool `json:"enableCrtEffect"` // true
 	// Gameplay
 	MouseSensitivity float32 `json:"mouseSensitivity"` // 1.0
 	// Audio
@@ -38,6 +39,7 @@ func FallbackSettings() {
 		RenderHeight:  480,
 		TargetFps:  144,
 		Fullscreen:  false,
+		EnableCrtEffect:  true,
 		MouseSensitivity:  1.0,
 		SoundVolume:  0.5,
 		LogPath:  "logs/",

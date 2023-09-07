@@ -22,13 +22,16 @@ type SceneManager struct {
 
 // Create a new SceneManager. A SceneManager will automatically take care of
 // your Scenes (calling their Init(), Deinit(), Draw(), DrawGUI() functions).
-func NewSceneManager() *SceneManager {
+func newSceneManager() *SceneManager {
 	return &SceneManager{
 		scenes:        make(map[string]Scene),
 		enabled_scenes: make(map[string]bool),
 		scene_order:   make([]string, 0),
 	}
 }
+
+// The global instance of the SceneManager
+var Sm *SceneManager = newSceneManager()
 
 // Register a scene with the SceneManager for automatic control
 func (sm *SceneManager) RegisterScene(name string, scene Scene) {

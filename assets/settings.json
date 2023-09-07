@@ -5,6 +5,7 @@
     "RenderHeight": 480,
     "TargetFps": 144,
     "Fullscreen": false,
+    "EnableCrtEffect": true,
     "MouseSensitivity": 1.0,
     "SoundVolume": 0.5,
     "LogPath": "logs/"

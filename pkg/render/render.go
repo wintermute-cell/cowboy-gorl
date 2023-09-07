@@ -23,6 +23,7 @@ package render
 
 import (
 	"cowboy-gorl/pkg/logging"
+	"cowboy-gorl/pkg/settings"
 	"math"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -130,7 +131,9 @@ func EndCustomRender() {
 
 	// NOTE: Not sure if the shader should also render over the GUI, or if
 	// we need to separate World and GUI into individual render textures.
-	rl.BeginShaderMode(Rs.Crtshader)
+    if settings.CurrentSettings().EnableCrtEffect {
+        rl.BeginShaderMode(Rs.Crtshader)
+    }
 	// render the oversize render texture to the actual screen.
 	rl.DrawTexturePro(Rs.CeilTex.Texture,
 		rl.Rectangle{
@@ -150,7 +153,9 @@ func EndCustomRender() {
 		},
 		rl.Vector2{X: 0, Y: 0}, 0, rl.White,
 	)
-	rl.EndShaderMode()
+    if settings.CurrentSettings().EnableCrtEffect {
+        rl.EndShaderMode()
+    }
 }
 
 func recalcScaleFactor() {

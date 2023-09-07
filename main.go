@@ -46,16 +46,18 @@ func main() {
     defer rl.CloseAudioDevice()
 
     // raygui
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_COLOR_NORMAL, 0xffffffff)
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 14)
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_COLOR_NORMAL, 0x000000)
+    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 24)
 
     // SCENES (this part MUST come after the system/rl initialization)
     // ( don't forget to defer the Deinit()!!! )
-    scene_manager := scenes.NewSceneManager()
-    scene_manager.RegisterScene("dev_scene", &scenes.DevScene{})
-    scene_manager.RegisterScene("anim_dev_scene", &scenes.AnimationDevScene{})
+    scenes.Sm.RegisterScene("dev", &scenes.DevScene{})
+    scenes.Sm.RegisterScene("anim_dev", &scenes.AnimationDevScene{})
+    scenes.Sm.RegisterScene("scene_picker", &scenes.ScenePickerScene{})
+    scenes.Sm.RegisterScene("dev_menu", &scenes.DevMenuScene{})
 
-    scene_manager.EnableScene("anim_dev_scene")
+    scenes.Sm.EnableScene("scene_picker")
+    scenes.Sm.EnableScene("dev_menu")
 
 	// GAME LOOP
 	for !rl.WindowShouldClose() {
@@ -67,8 +69,8 @@ func main() {
             rl.ClearBackground(rl.DarkGreen) // clear the main rendertex
 
             // Draw all registered Scenes
-            scene_manager.DrawScenes()
-            scene_manager.DrawScenesGUI()
+            scenes.Sm.DrawScenes()
+            scenes.Sm.DrawScenesGUI()
 
         render.EndCustomRender()
 
@@ -79,5 +81,5 @@ func main() {
         rl.EndDrawing()
 	}
     
-    scene_manager.DisableAllScenes()
+    scenes.Sm.DisableAllScenes()
 }

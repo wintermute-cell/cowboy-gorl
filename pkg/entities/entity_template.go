@@ -12,6 +12,7 @@ type TemplateEntity struct {
     // Required fields
     entity_manager *EntityManager
 
+    // Custom Fields
     // Add fields here for any state that the entity should keep track of
     // ...
 }
