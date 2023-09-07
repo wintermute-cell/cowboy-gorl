@@ -12,13 +12,14 @@ file in `assets`.
 
 The values written as comments are used as default values:
 ```go
-	TargetFps    int  `json:"targetFps"`    // 144
+TargetFps    int  `json:"targetFps"`    // 144
 ```
 
 Usage example:
 ```bash
 python scripts/sync_settings.py [path/to/settings.go path/to/settings.json]
 ```
+
 If no path is given, the following defaults apply: 
 ```
 ./pkg/settings/settings.go
