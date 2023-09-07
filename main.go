@@ -51,9 +51,11 @@ func main() {
 
     // SCENES (this part MUST come after the system/rl initialization)
     // ( don't forget to defer the Deinit()!!! )
-	dev_scene := scenes.DevScene{}
-	dev_scene.Init()
-	defer dev_scene.Deinit()
+    scene_manager := scenes.NewSceneManager()
+    scene_manager.RegisterScene("dev_scene", &scenes.DevScene{})
+    scene_manager.RegisterScene("anim_dev_scene", &scenes.AnimationDevScene{})
+
+    scene_manager.EnableScene("anim_dev_scene")
 
 	// GAME LOOP
 	for !rl.WindowShouldClose() {
@@ -64,11 +66,9 @@ func main() {
 
             rl.ClearBackground(rl.DarkGreen) // clear the main rendertex
 
-            // Draw Content
-            dev_scene.Draw()
-
-            // Draw GUI
-            dev_scene.DrawGUI()
+            // Draw all registered Scenes
+            scene_manager.DrawScenes()
+            scene_manager.DrawScenesGUI()
 
         render.EndCustomRender()
 
@@ -77,6 +77,7 @@ func main() {
         rl.DrawGrid(10, 1.0)
 
         rl.EndDrawing()
-
 	}
+    
+    scene_manager.DisableAllScenes()
 }
