@@ -1,45 +1,29 @@
 <!-- LTeX: language=en-US -->
-# game-gorl (game codebase using Go and raylib)
-## Creating a project
-First, start by copying the source:
-```bash
-git clone https://github.com/wintermute-cell/game-gorl <my-project-name>
-cd <my-project-name>
-rm -rf .git
-```
-Then, adjust the `makefile`. Finally, run:
-```bash
-go mod init <my-project-name>
-go mod tidy
-```
+# cowboy-gorl
+## Setting up the project for development
+TODO
 
 ## Structure
 - `assets`: Holds game assets.
-  - `settings.json`: Settings file.
-  - `textures`: Texture files.
+- `documentation`: A place for further documentation media.
 - `build`: Destination for build output.
 - `main.go`: Application entry point.
 - `makefile`: Manages build tasks.
 - `pkg`: Go packages.
-  - `settings`: Settings handling.
-  - `entities`: Game entities.
-  - `render`: Rendering logic.
-  - `scenes`: Game stages.
-- `scripts`: Utility scripts.
+    - `animation`: Animate values over time using keyframes.
+    - `logging`: Log out information at different levels.
+    - `settings`: Load setting from a file and provide a fallback.
+    - `entities`: A place for the games entities.
+    - `render`: A custom rendering loop.
+    - `scenes`: The games stages, composing together entities.
+    - `util`: Various smaller functions, that might be useful everywhere.
+- `scripts`: Utility scripts for development.
 
-## Scripts
+## Detailed Documentation
 
-### sync_settings.py
-Generates Go fallback settings and JSON from GameSettings struct.
-
-Usage:
-```bash
-python scripts/sync_settings.py [path/to/settings.go path/to/settings.json]
-```
-If no path is given, the following defaults apply: `./pkg/settings/settings.go`,
-`./assets/settings.json`.
-
-> Note: Review changes and test after running.
+Detailed Documentation on many different subjects can be found here:
+- [Scripts](./documentation/scripts.md)
+- [Game Structure: Scenes & Entities](./documentation/scenes-and-entities.md)
 
 ## Resources
 - Sounds
