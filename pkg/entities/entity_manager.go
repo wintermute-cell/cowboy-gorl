@@ -16,7 +16,8 @@ import "cowboy-gorl/pkg/logging"
 
 type EntityManager struct {
 	entities        map[string]Entity
-	enable_entities map[string]bool
+    dependencies    map[string][]string
+	enabled_entities map[string]bool
 	entity_order    []string // slice to maintain order, since map is unordered
 }
 
@@ -25,17 +26,19 @@ type EntityManager struct {
 func NewEntityManager() *EntityManager {
 	return &EntityManager{
 		entities:        make(map[string]Entity),
-		enable_entities: make(map[string]bool),
+        dependencies:   make(map[string][]string),
+		enabled_entities: make(map[string]bool),
 		entity_order:    make([]string, 0),
 	}
 }
 
 // Register an entity with the EntityManager for automatic control
-func (em *EntityManager) RegisterEntity(name string, entity Entity, enable_immediately bool) {
+func (em *EntityManager) RegisterEntity(name string, entity Entity, enable_immediately bool, dependencies []string) {
 	if _, exists := em.entities[name]; exists {
 		logging.Fatal("An entity with name \"%v\" is already registered.", name)
 	}
 	em.entities[name] = entity
+    em.dependencies[name] = dependencies
 	em.entity_order = append(em.entity_order, name) // Add to the end by default
 
 	// immediately enable the entity
@@ -90,10 +93,21 @@ func (em *EntityManager) EnableEntity(name string) {
 		logging.Fatal("Entity with name %v not found.", name)
 	}
 
+    // Valiadate dependecies are enabled
+    missing_deps := []string{}
+    for _, dep := range em.dependencies[name] {
+        if !em.enabled_entities[dep] {
+            missing_deps = append(missing_deps, dep)
+        }
+    }
+    if len(missing_deps) > 0 {
+        logging.Fatal("Tried loading entity with name \"%v\" before some of its dependencies were loaded: %v", name, missing_deps)
+    }
+
 	// Initialize the entity if it's not already enabled
-	if !em.enable_entities[name] {
+	if !em.enabled_entities[name] {
 		entity.Init()
-		em.enable_entities[name] = true
+		em.enabled_entities[name] = true
 	}
 }
 
@@ -105,18 +119,18 @@ func (em *EntityManager) DisableEntity(name string) {
 	}
 
 	// De-initialize the entity if it's currently enabled
-	if em.enable_entities[name] {
+	if em.enabled_entities[name] {
 		entity.Deinit()
-		em.enable_entities[name] = false
+		em.enabled_entities[name] = false
 	}
 }
 
 // Disable all Entities that are currently enabled.
 func (em *EntityManager) DisableAllEntities() {
 	for _, name := range em.entity_order {
-		if em.enable_entities[name] {
+		if em.enabled_entities[name] {
 			em.entities[name].Deinit()
-			em.enable_entities[name] = false
+			em.enabled_entities[name] = false
 		}
 	}
 }
@@ -124,7 +138,7 @@ func (em *EntityManager) DisableAllEntities() {
 // Call the Update() functions of all the registered Entities in their defined order.
 func (em *EntityManager) UpdateEntities() {
 	for _, name := range em.entity_order {
-		if em.enable_entities[name] {
+		if em.enabled_entities[name] {
 			em.entities[name].Update()
 		}
 	}

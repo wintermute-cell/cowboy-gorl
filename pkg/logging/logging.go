@@ -109,4 +109,5 @@ func Fatal(format string, v ...any) {
 	assertInstanceExists()
     caller := callerInfo()
 	log_instance.fatalLogger.Printf("%s: "+format, append([]interface{}{caller}, v...)...)
+    os.Exit(1)
 }

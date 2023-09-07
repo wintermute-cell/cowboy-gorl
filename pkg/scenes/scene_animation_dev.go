@@ -29,7 +29,7 @@ func (scn *AnimationDevScene) Init() {
 			0.0,
 		})
 
-    scn.entity_manager.RegisterEntity("background", &bg_ent, true)
+    scn.entity_manager.RegisterEntity("background", &bg_ent, true, []string{})
 
     // Animated objects
     // Ore Cluster
@@ -42,6 +42,7 @@ func (scn *AnimationDevScene) Init() {
         "animated-ore",
         &anim_ore,
         true,
+        []string{},
         )
 
     // Animated Moving Circle
@@ -49,6 +50,7 @@ func (scn *AnimationDevScene) Init() {
         "animated-mover",
         &entities.AnimationTestMoverEntity{},
         true,
+        []string{},
         )
 
     // Animated Text
@@ -56,6 +58,7 @@ func (scn *AnimationDevScene) Init() {
         "animated-text",
         &entities.AnimationTestTextEntity{},
         true,
+        []string{},
         )
 
 	logging.Info("AnimationTestScene initialized.")

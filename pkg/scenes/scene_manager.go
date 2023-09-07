@@ -16,7 +16,7 @@ import "cowboy-gorl/pkg/logging"
 
 type SceneManager struct {
 	scenes        map[string]Scene
-	enable_scenes map[string]bool
+	enabled_scenes map[string]bool
 	scene_order   []string // slice to maintain order, since map is unordered
 }
 
@@ -25,7 +25,7 @@ type SceneManager struct {
 func NewSceneManager() *SceneManager {
 	return &SceneManager{
 		scenes:        make(map[string]Scene),
-		enable_scenes: make(map[string]bool),
+		enabled_scenes: make(map[string]bool),
 		scene_order:   make([]string, 0),
 	}
 }
@@ -83,9 +83,9 @@ func (sm *SceneManager) EnableScene(name string) {
 	}
 
 	// Initialize the scene if it's not already enabled
-	if !sm.enable_scenes[name] {
+	if !sm.enabled_scenes[name] {
 		scene.Init()
-		sm.enable_scenes[name] = true
+		sm.enabled_scenes[name] = true
 	}
 }
 
@@ -97,18 +97,18 @@ func (sm *SceneManager) DisableScene(name string) {
 	}
 
 	// De-initialize the scene if it's currently enabled
-	if sm.enable_scenes[name] {
+	if sm.enabled_scenes[name] {
 		scene.Deinit()
-		sm.enable_scenes[name] = false
+		sm.enabled_scenes[name] = false
 	}
 }
 
 // Disable all Scenes that are currently enabled.
 func (sm *SceneManager) DisableAllScenes() {
     for _, name := range sm.scene_order {
-		if sm.enable_scenes[name] {
+		if sm.enabled_scenes[name] {
             sm.scenes[name].Deinit()
-            sm.enable_scenes[name] = false
+            sm.enabled_scenes[name] = false
 		}
     }
 }
@@ -116,7 +116,7 @@ func (sm *SceneManager) DisableAllScenes() {
 // Call the Draw() functions of all the registered Scenes in their defined order.
 func (sm *SceneManager) DrawScenes() {
     for _, name := range sm.scene_order {
-		if sm.enable_scenes[name] {
+		if sm.enabled_scenes[name] {
 			sm.scenes[name].Draw()
 		}
     }
@@ -125,7 +125,7 @@ func (sm *SceneManager) DrawScenes() {
 // Call the DrawGUI() functions of all the registered Scenes in their defined order.
 func (sm *SceneManager) DrawScenesGUI() {
     for _, name := range sm.scene_order {
-		if sm.enable_scenes[name] {
+		if sm.enabled_scenes[name] {
 			sm.scenes[name].DrawGUI()
 		}
     }
