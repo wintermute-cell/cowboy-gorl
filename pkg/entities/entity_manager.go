@@ -1,8 +1,8 @@
 // EntityManager provides a manager for game entities, automating the calling
-// of their Init(), Deinit() and Update() functions, 
+// of their Init(), Deinit() and Update() functions,
 // A EntityManager also features enabling/disabling, and ordering of entities
 // for update operations.
-// 
+//
 // Usage:
 //    - Create a new EntityManager with `NewEntityManager`.
 //    - Register entities using `RegisterEntity(name, entity)`.
@@ -17,7 +17,7 @@ import "cowboy-gorl/pkg/logging"
 type EntityManager struct {
 	entities        map[string]Entity
 	enable_entities map[string]bool
-	entity_order   []string // slice to maintain order, since map is unordered
+	entity_order    []string // slice to maintain order, since map is unordered
 }
 
 // Create a new EntityManager. A EntityManager will automatically take care of
@@ -26,7 +26,7 @@ func NewEntityManager() *EntityManager {
 	return &EntityManager{
 		entities:        make(map[string]Entity),
 		enable_entities: make(map[string]bool),
-		entity_order:   make([]string, 0),
+		entity_order:    make([]string, 0),
 	}
 }
 
@@ -38,14 +38,13 @@ func (em *EntityManager) RegisterEntity(name string, entity Entity, enable_immed
 	em.entities[name] = entity
 	em.entity_order = append(em.entity_order, name) // Add to the end by default
 
-
-    // immediately enable the entity
-    if enable_immediately {
-        em.EnableEntity(name)
-        logging.Info("Registered Entity with name \"%v\" and immediately enabled.", name)
-    } else {
-        logging.Info("Registered Entity with name \"%v\" without enabling.", name)
-    }
+	// immediately enable the entity
+	if enable_immediately {
+		em.EnableEntity(name)
+		logging.Info("Registered Entity with name \"%v\" and immediately enabled.", name)
+	} else {
+		logging.Info("Registered Entity with name \"%v\" without enabling.", name)
+	}
 }
 
 // MoveEntityToFront moves the entity to the front of the update order
@@ -114,19 +113,19 @@ func (em *EntityManager) DisableEntity(name string) {
 
 // Disable all Entities that are currently enabled.
 func (em *EntityManager) DisableAllEntities() {
-    for _, name := range em.entity_order {
+	for _, name := range em.entity_order {
 		if em.enable_entities[name] {
 			em.entities[name].Deinit()
-            em.enable_entities[name] = false
+			em.enable_entities[name] = false
 		}
-    }
+	}
 }
 
 // Call the Update() functions of all the registered Entities in their defined order.
 func (em *EntityManager) UpdateEntities() {
-    for _, name := range em.entity_order {
+	for _, name := range em.entity_order {
 		if em.enable_entities[name] {
 			em.entities[name].Update()
 		}
-    }
+	}
 }
