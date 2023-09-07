@@ -12,3 +12,24 @@ package util
 func DeleteFromSlice[S ~[]E, E any](s S, i, j int) S {
 	return append(s[:i], s[j:]...)
 }
+
+// Index returns the index of the first occurrence of v in s,
+// or -1 if not present.
+// DISCLAIMER: This func is yoinked from golang experimental branch: 
+// https://cs.opensource.google/go/x/exp/+/92128663:slices/slices.go;l=93
+func SliceIndex[S ~[]E, E comparable](s S, v E) int {
+	for i := range s {
+		if v == s[i] {
+			return i
+		}
+	}
+	return -1
+}
+
+// Contains reports whether v is present in s.
+// DISCLAIMER: This func is yoinked from golang experimental branch: 
+// https://cs.opensource.google/go/x/exp/+/92128663:slices/slices.go;l=93
+func SliceContains[S ~[]E, E comparable](s S, v E) bool {
+	return SliceIndex(s, v) >= 0
+}
+

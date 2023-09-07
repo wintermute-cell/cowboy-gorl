@@ -1,8 +1,8 @@
 // SceneManager provides a manager for game scenes, automating the calling
-// of their Init(), Deinit(), Draw(), ... functions, 
+// of their Init(), Deinit(), Draw(), ... functions,
 // A SceneManager also features enabling/disabling, and ordering of scenes
 // for drawing operations.
-// 
+//
 // Usage:
 //    - Create a new SceneManager with `NewSceneManager`.
 //    - Register scenes using `RegisterScene(name, scene)`.
@@ -12,7 +12,10 @@
 
 package scenes
 
-import "cowboy-gorl/pkg/logging"
+import (
+	"cowboy-gorl/pkg/logging"
+	"cowboy-gorl/pkg/util"
+)
 
 type SceneManager struct {
 	scenes        map[string]Scene
@@ -110,6 +113,17 @@ func (sm *SceneManager) DisableScene(name string) {
 func (sm *SceneManager) DisableAllScenes() {
     for _, name := range sm.scene_order {
 		if sm.enabled_scenes[name] {
+            sm.scenes[name].Deinit()
+            sm.enabled_scenes[name] = false
+		}
+    }
+}
+
+// Disable all Scenes that are currently enabled, except for the ones specified
+// by name in the `exception_slice` parameter.
+func (sm *SceneManager) DisableAllScenesExcept(exception_slice []string) {
+    for _, name := range sm.scene_order {
+		if sm.enabled_scenes[name]  && !util.SliceContains(exception_slice, name) {
             sm.scenes[name].Deinit()
             sm.enabled_scenes[name] = false
 		}

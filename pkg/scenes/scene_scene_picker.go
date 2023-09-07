@@ -34,7 +34,7 @@ func (scn *ScenePickerScene) Deinit() {
 
 func (scn *ScenePickerScene) DrawGUI() {
     if rg.Button(rl.NewRectangle(100, 100, 300, 32), "Animation Dev Scene") {
-        Sm.DisableScene("scene_picker")
+        Sm.DisableAllScenesExcept([]string{"dev_menu"})
         Sm.EnableScene("anim_dev")
     }
 }

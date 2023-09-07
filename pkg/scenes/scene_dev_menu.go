@@ -43,6 +43,16 @@ func (scn *DevMenuScene) DrawGUI() {
         settings.CurrentSettings().EnableCrtEffect = !settings.CurrentSettings().EnableCrtEffect
     }
 
+    if rg.Button(rl.NewRectangle(40, 4, 180, 32), "Animation Dev Scene") {
+        Sm.DisableAllScenesExcept([]string{"dev_menu"})
+        Sm.EnableScene("anim_dev")
+    }
+
+    if rg.Button(rl.NewRectangle(224, 4, 180, 32), "Scene Picker Scene") {
+        Sm.DisableAllScenesExcept([]string{"dev_menu"})
+        Sm.EnableScene("scene_picker")
+    }
+
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, original_text_size)
 }
 
