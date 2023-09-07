@@ -41,9 +41,9 @@ If no path is given, the following defaults apply: `./pkg/settings/settings.go`,
 
 > Note: Review changes and test after running.
 
-
-## TODO
-See kanban: https://trello.com/b/D51PBmQU/cowboy-gorl
+## Resources
+- Sounds
+    - https://blipsounds.com/community-library/
 
 ## Inspiration
 - Pinterest: https://www.pinterest.de/kjuliusg/cowboy-gorl/
