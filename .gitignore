@@ -26,3 +26,5 @@ build/
 # Go workspace file
 go.work
 
+# Reaper
+*.reapeaks
