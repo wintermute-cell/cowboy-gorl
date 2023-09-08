@@ -68,7 +68,7 @@ func Init(render_width int, render_height int) {
 	rl.SetTextureFilter(Rs.CeilTex.Texture, rl.FilterBilinear)
 	logging.Info("Custom Rendering Environment initialized.")
 
-	Rs.Crtshader = rl.LoadShader("", "shaders/crt-matthias.fs")
+	Rs.Crtshader = rl.LoadShader("", "shaders/crt-matthias.glsl")
 	if Rs.Crtshader.ID == 0 {
 		logging.Error("Failed to load CRT shader!")
 	}
@@ -107,6 +107,21 @@ func BeginCustomRender() {
 }
 
 func EndCustomRender() {
+	rl.DrawTexturePro(Rs.TargetTex.Texture,
+		rl.Rectangle{
+			X:      0.0,
+			Y:      0.0,
+			Width:  float32(Rs.TargetTex.Texture.Width),
+			Height: -float32(Rs.TargetTex.Texture.Height),
+		},
+		rl.Rectangle{
+			X:      0.0,
+			Y:      0.0,
+			Width:  float32(Rs.TargetTex.Texture.Width),
+			Height: float32(Rs.TargetTex.Texture.Height),
+		},
+		rl.Vector2{X: 0, Y: 0}, 0, rl.White)
+
 	rl.EndTextureMode()
 
 	// render the contents of the primary render texture to the slightly

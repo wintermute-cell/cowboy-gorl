@@ -26,9 +26,9 @@ uniform COMPAT_PRECISION vec2 OutputSize;
 uniform COMPAT_PRECISION vec2 TextureSize;
 uniform COMPAT_PRECISION vec2 InputSize;
 
-#define OutputSize vec2(320, 240)
-#define TextureSize vec2(320, 240)
-#define InputSize vec2(320, 240)
+#define OutputSize  vec2(1280, 960)
+#define TextureSize vec2(640, 480) // Doesnt affect RGB pixel effect but affects sharpness
+#define InputSize   vec2(4000, 4000)
 
 uniform sampler2D texture0;
 
@@ -282,8 +282,11 @@ vec3 Mask(vec2 pos)
     // Stretched VGA style shadow mask (same as prior shaders).
     else if (shadowMask == 3.0) 
     {
-        pos.x += pos.y*3.0;
-        pos.x  = fract(pos.x*0.166666666);
+        float x_fac = 6.0;   // controls the horizontal repeat rate
+        float y_fac = 3.0;   // controls the vertical repeat rate, you can adjust this value
+
+        pos.x += (pos.y * y_fac) * x_fac;
+        pos.x = fract(pos.x * (1 / (x_fac * 2.0)));
 
         if      (pos.x < 0.333) mask.r = maskLight;
         else if (pos.x < 0.666) mask.g = maskLight;
