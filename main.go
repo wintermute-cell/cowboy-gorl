@@ -53,10 +53,9 @@ func main() {
     // ( don't forget to defer the Deinit()!!! )
     scenes.Sm.RegisterScene("dev", &scenes.DevScene{})
     scenes.Sm.RegisterScene("anim_dev", &scenes.AnimationDevScene{})
-    scenes.Sm.RegisterScene("scene_picker", &scenes.ScenePickerScene{})
+    scenes.Sm.RegisterScene("gui_dev", &scenes.GuiDevScene{})
     scenes.Sm.RegisterScene("dev_menu", &scenes.DevMenuScene{})
 
-    scenes.Sm.EnableScene("scene_picker")
     scenes.Sm.EnableScene("dev_menu")
 
 	// GAME LOOP
