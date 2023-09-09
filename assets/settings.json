@@ -1,6 +1,6 @@
 {
     "ScreenWidth": 1280,
-    "ScreenHeight": 960,
+    "ScreenHeight": 720,
     "RenderWidth": 640,
     "RenderHeight": 480,
     "TargetFps": 144,

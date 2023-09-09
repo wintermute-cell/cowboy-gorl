@@ -4,6 +4,7 @@ in vec2 fragTexCoord;
 out vec4 fragColor;
 
 //uniform vec2 resolution;
+#define CHROMATIC_ABBERATION 1.1
 #define RESOLUTION vec2(640, 480)
 //uniform float time;
 //#define TIME 0.0 // i guess if time is always zero we just miss out on animation?
@@ -64,7 +65,7 @@ float rand(vec2 co)
     
 void main(void){
         /* Curve */
-        vec2 curved_uv = mix( curve( fragTexCoord ), fragTexCoord, 0.8 ); // the 0.4 is the curve amount
+        vec2 curved_uv = mix( curve( fragTexCoord ), fragTexCoord, 0.8 ); // mix value adjusts curve amount. higher value, less curve
 
         // this appears to zoom the screen
         float scale = 0.0;
@@ -75,12 +76,18 @@ void main(void){
 
         // this adds chromatic abberation that is animated if TIME is changing
         float x =  sin(0.1*TIME+curved_uv.y*13.0)*sin(0.23*TIME+curved_uv.y*19.0)*sin(0.3+0.11*TIME+curved_uv.y*23.0)*0.0012;
-        float o =sin(gl_FragCoord.y*1.5)/RESOLUTION.x;
+        float o = sin(gl_FragCoord.y*1.5)/RESOLUTION.x;
         x+=o*0.25;
 
-        col.r = tsample(texture0,vec2(x+scuv.x+0.0009,scuv.y+0.0009),RESOLUTION.y/800.0, RESOLUTION ).x+0.02;
-        col.g = tsample(texture0,vec2(x+scuv.x+0.0000,scuv.y-0.0011),RESOLUTION.y/800.0, RESOLUTION ).y+0.02;
-        col.b = tsample(texture0,vec2(x+scuv.x-0.0015,scuv.y+0.0000),RESOLUTION.y/800.0, RESOLUTION ).z+0.02;
+        col.r = tsample(
+            texture0,vec2(
+                x+scuv.x+0.0005*CHROMATIC_ABBERATION,scuv.y+0.0005*CHROMATIC_ABBERATION),RESOLUTION.y/800.0, RESOLUTION ).x+0.02;
+        col.g = tsample(
+            texture0,vec2(
+                x+scuv.x+0.0000*CHROMATIC_ABBERATION,scuv.y-0.0007*CHROMATIC_ABBERATION),RESOLUTION.y/800.0, RESOLUTION ).y+0.02;
+        col.b = tsample(
+            texture0,vec2(
+                x+scuv.x-0.0011*CHROMATIC_ABBERATION,scuv.y+0.0000*CHROMATIC_ABBERATION),RESOLUTION.y/800.0, RESOLUTION ).z+0.02;
 
         /* Ghosting */
 
@@ -106,7 +113,7 @@ void main(void){
 
         // TODO: add adjustment parameters to all these effects
         /* Level adjustment (curves) */
-        col *= vec3(0.95,1.05,0.95);
+        col *= vec3(0.85,0.95,0.85);
         col = clamp(col*1.3 + 0.75*col*col + 1.25*col*col*col*col*col,vec3(0.0),vec3(10.0));
 
         /* Vignette */
@@ -116,7 +123,7 @@ void main(void){
 
         /* Scanlines */
         float scans = clamp( 0.35+0.18*sin(6.0*TIME+curved_uv.y*RESOLUTION.y*1.5), 0.0, 1.0);
-        float s = pow(scans,0.9);
+        float s = pow(scans,0.3);
         col = col * vec3(s);
 
         /* Vertical lines (shadow mask) */

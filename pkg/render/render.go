@@ -112,7 +112,8 @@ func Init(render_width int, render_height int) {
 	if Rs.Blurshader_loc_blur == 0 {
 		logging.Error("Failed to find shader uniform location for BLUR in crt-matthias-blur.")
 	}
-	rl.SetShaderValue(Rs.Blurshader, Rs.Blurshader_loc_blur, []float32{0.0005, 0.0006}, rl.ShaderUniformVec2)
+	//rl.SetShaderValue(Rs.Blurshader, Rs.Blurshader_loc_blur, []float32{0.0005, 0.0006}, rl.ShaderUniformVec2)
+	rl.SetShaderValue(Rs.Blurshader, Rs.Blurshader_loc_blur, []float32{0.0003, 0.0004}, rl.ShaderUniformVec2)
 
 	// accumulate shader
 	Rs.Accumulateshader = rl.LoadShader("", "shaders/crt-matthias-accumulate.glsl")

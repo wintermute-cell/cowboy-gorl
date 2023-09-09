@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cowboy-gorl/pkg/gui"
 	"cowboy-gorl/pkg/logging"
 	"cowboy-gorl/pkg/render"
 	"cowboy-gorl/pkg/scenes"
@@ -44,6 +45,9 @@ func main() {
     // initialize the audio device
     rl.InitAudioDevice()
     defer rl.CloseAudioDevice()
+
+    // gui
+    gui.Init()
 
     // raygui
     rg.SetStyle(rg.DEFAULT, rg.TEXT_COLOR_NORMAL, 0x000000)

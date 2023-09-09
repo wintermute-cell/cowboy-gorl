@@ -2,6 +2,7 @@ package scenes
 
 import (
 	"cowboy-gorl/pkg/entities"
+	"cowboy-gorl/pkg/gui"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -43,6 +44,8 @@ func (scn *GuiDevScene) Init() {
     rl.SetTextureFilter(scn.romulus_font.Texture, rl.FilterPoint);
 
     scn.scroll_offset = rl.Vector2Zero()
+
+    gui.AddFont("alagard", "fonts/alagard.png", rl.FilterPoint)
 }
 
 func (scn *GuiDevScene) Deinit() {
@@ -54,7 +57,7 @@ func (scn *GuiDevScene) DrawGUI() {
     i := float32(2.0)
 
     so := scn.scroll_offset // just a shorter alias for Scroll Offset
-    view := rg.ScrollPanel(rl.NewRectangle(10, 48, 620, 400), "GUI Label Examples", rl.NewRectangle(16, 48, 600, 800), &scn.scroll_offset)
+    view := rg.ScrollPanel(rl.NewRectangle(10, 48, 620, 400), "GUI Label Examples", rl.NewRectangle(16, 48, 600, 2000), &scn.scroll_offset)
 
     // we use the view returned by rg.ScrollPanel to scissor out the out of bounds content. 
     rl.BeginScissorMode(int32(view.X), int32(view.Y), int32(view.Width), int32(view.Height))
@@ -74,73 +77,20 @@ func (scn *GuiDevScene) DrawGUI() {
     rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "after SetFont and setting TEXT_SIZE")
     i += 1
 
-    rl.SetTextureFilter(original_font.Texture, rl.FilterPoint);
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "after setting Point Filtering")
+    gui.TextEx("Text *3 with gui package", rl.NewVector2(so.X+16, so.Y+float32(line_height)*i), 2, "", rl.Black)
     i += 1
 
-    rg.SetFont(scn.alagard_font)
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with alagard font")
+    gui.TextEx("gui package alagard*3", rl.NewVector2(so.X+16, so.Y+float32(line_height)*i), 2.0, "alagard", rl.Black)
     i += 1
 
-    rg.Label(rl.NewRectangle(so.X+17, so.Y+float32(line_height)*i, 600, 24), "with alagard font shifted +1px right")
-    i += 1
-
-    // NOTE: scaling a pixelfont with non-integer values (e.g. 1.65) is no good
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(float32(scn.alagard_font.BaseSize)*1.65))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with alagard font at BaseSize*1.65")
-    i += 1
-
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.alagard_font.BaseSize))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with alagard font at BaseSize")
-    i += 1
-
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.alagard_font.BaseSize*2.0))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with alagard font at BaseSize*2")
-    i += 1
-
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.alagard_font.BaseSize*2.0))
-    rg.Label(rl.NewRectangle(so.X+15, so.Y+float32(line_height)*i, 600, 24), "with alagard font at BaseSize*2 shifted -1px left")
-    i += 1
-
-    orig_spacing := rg.GetStyle(rg.DEFAULT, rg.TEXT_SPACING)
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SPACING, 3)
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.alagard_font.BaseSize*2.0))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with alagard *2 with spacing=3")
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SPACING, orig_spacing)
-    i += 1
-
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SPACING, 2)
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.alagard_font.BaseSize*2.0))
-    rg.Label(rl.NewRectangle(so.X+15, so.Y+float32(line_height)*i, 600, 24), "alagard *2, spacing=2, -1px left")
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SPACING, orig_spacing)
-    i += 1
-
-    rg.SetFont(scn.pixantiqua_font)
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.pixantiqua_font.BaseSize))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with pixantiqua font at BaseSize")
-    i += 1
-
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.pixantiqua_font.BaseSize*2.0))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with pixantiqua font at BaseSize*2")
-    i += 1
-
-    rg.SetFont(scn.pixelplay_font)
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.pixelplay_font.BaseSize))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with pixelplay font at BaseSize")
-    i += 1
-
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.pixelplay_font.BaseSize*2.0))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with pixelplay font at BaseSize*2")
-    i += 1
-
-    rg.SetFont(scn.romulus_font)
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.romulus_font.BaseSize))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with romulus font at BaseSize")
-    i += 1
-
-    rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, int64(scn.romulus_font.BaseSize*2.0))
-    rg.Label(rl.NewRectangle(so.X+16, so.Y+float32(line_height)*i, 600, 24), "with romulus font at BaseSize*2")
-    i += 1
+    gui.ButtonEx(
+        "gui package ButtonEx",
+        rl.NewVector2(so.X+16, so.Y+float32(line_height)*i),
+        rl.Vector2Zero(),
+        "default", 2.0,
+        rl.Blue, rl.SkyBlue, rl.DarkBlue,
+        rl.White, rl.White, rl.White,
+        )
 
     rl.EndScissorMode()
 
@@ -148,7 +98,7 @@ func (scn *GuiDevScene) DrawGUI() {
     rg.SetFont(original_font)
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 24)
 
-    // pixel ruler // 640 480
+    // pixel ruler
     offs := int32(7)
     rl.DrawLine(0, 480, 0, 300, rl.Red)
     rl.DrawLine(1, 480, 1, 300, rl.Green)
