@@ -6,9 +6,10 @@ out vec4 fragColor;
 //uniform vec2 resolution;
 #define RESOLUTION vec2(640, 480)
 //uniform float time;
-#define TIME 0.0 // i guess if time is always zero we just miss out on animation?
+//#define TIME 0.0 // i guess if time is always zero we just miss out on animation?
+uniform float TIME;
 uniform sampler2D texture0;
-//uniform sampler2D blurbuffer; // TODO add back later
+uniform sampler2D texture1;
 
 // these are never used??
 uniform float cfg_curvature;
@@ -81,27 +82,26 @@ void main(void){
         col.g = tsample(texture0,vec2(x+scuv.x+0.0000,scuv.y-0.0011),RESOLUTION.y/800.0, RESOLUTION ).y+0.02;
         col.b = tsample(texture0,vec2(x+scuv.x-0.0015,scuv.y+0.0000),RESOLUTION.y/800.0, RESOLUTION ).z+0.02;
 
-        // TODO: ADD BACK LATER, NEEDS "blurbuffer"
-        ///* Ghosting */
+        /* Ghosting */
 
-        //float i = clamp(col.r*0.299 + col.g*0.587 + col.b*0.114, 0.0, 1.0 );        
-        //i = pow( 1.0 - pow(i,2.0), 1.0 );
-        //i = (1.0-i) * 0.85 + 0.15;  
+        float i = clamp(col.r*0.299 + col.g*0.587 + col.b*0.114, 0.0, 1.0 );        
+        i = pow( 1.0 - pow(i,2.0), 1.0 );
+        i = (1.0-i) * 0.85 + 0.15;  
 
-        //float ghs = 0.15;
-        //vec3 r = tsample(blurbuffer, vec2(x-0.014*1.0, -0.027)*0.85+0.007*vec2( 0.35*sin(1.0/7.0 + 15.0*curved_uv.y + 0.9*TIME), 
-        //    0.35*sin( 2.0/7.0 + 10.0*curved_uv.y + 1.37*TIME) )+vec2(scuv.x+0.001,scuv.y+0.001),
-        //    5.5+1.3*sin( 3.0/9.0 + 31.0*curved_uv.x + 1.70*TIME),RESOLUTION).xyz*vec3(0.5,0.25,0.25);
-        //vec3 g = tsample(blurbuffer, vec2(x-0.019*1.0, -0.020)*0.85+0.007*vec2( 0.35*cos(1.0/9.0 + 15.0*curved_uv.y + 0.5*TIME), 
-        //    0.35*sin( 2.0/9.0 + 10.0*curved_uv.y + 1.50*TIME) )+vec2(scuv.x+0.000,scuv.y-0.002),
-        //    5.4+1.3*sin( 3.0/3.0 + 71.0*curved_uv.x + 1.90*TIME),RESOLUTION).xyz*vec3(0.25,0.5,0.25);
-        //vec3 b = tsample(blurbuffer, vec2(x-0.017*1.0, -0.003)*0.85+0.007*vec2( 0.35*sin(2.0/3.0 + 15.0*curved_uv.y + 0.7*TIME), 
-        //    0.35*cos( 2.0/3.0 + 10.0*curved_uv.y + 1.63*TIME) )+vec2(scuv.x-0.002,scuv.y+0.000),
-        //    5.3+1.3*sin( 3.0/7.0 + 91.0*curved_uv.x + 1.65*TIME),RESOLUTION).xyz*vec3(0.25,0.25,0.5);
-        //
-        //col += vec3(ghs*(1.0-0.299))*pow(clamp(vec3(3.0)*r,vec3(0.0),vec3(1.0)),vec3(2.0))*vec3(i);
-        //col += vec3(ghs*(1.0-0.587))*pow(clamp(vec3(3.0)*g,vec3(0.0),vec3(1.0)),vec3(2.0))*vec3(i);
-        //col += vec3(ghs*(1.0-0.114))*pow(clamp(vec3(3.0)*b,vec3(0.0),vec3(1.0)),vec3(2.0))*vec3(i);
+        float ghs = 0.15;
+        vec3 r = tsample(texture1, vec2(x-0.014*1.0, -0.027)*0.85+0.007*vec2( 0.35*sin(1.0/7.0 + 15.0*curved_uv.y + 0.9*TIME), 
+            0.35*sin( 2.0/7.0 + 10.0*curved_uv.y + 1.37*TIME) )+vec2(scuv.x+0.001,scuv.y+0.001),
+            5.5+1.3*sin( 3.0/9.0 + 31.0*curved_uv.x + 1.70*TIME),RESOLUTION).xyz*vec3(0.5,0.25,0.25);
+        vec3 g = tsample(texture1, vec2(x-0.019*1.0, -0.020)*0.85+0.007*vec2( 0.35*cos(1.0/9.0 + 15.0*curved_uv.y + 0.5*TIME), 
+            0.35*sin( 2.0/9.0 + 10.0*curved_uv.y + 1.50*TIME) )+vec2(scuv.x+0.000,scuv.y-0.002),
+            5.4+1.3*sin( 3.0/3.0 + 71.0*curved_uv.x + 1.90*TIME),RESOLUTION).xyz*vec3(0.25,0.5,0.25);
+        vec3 b = tsample(texture1, vec2(x-0.017*1.0, -0.003)*0.85+0.007*vec2( 0.35*sin(2.0/3.0 + 15.0*curved_uv.y + 0.7*TIME), 
+            0.35*cos( 2.0/3.0 + 10.0*curved_uv.y + 1.63*TIME) )+vec2(scuv.x-0.002,scuv.y+0.000),
+            5.3+1.3*sin( 3.0/7.0 + 91.0*curved_uv.x + 1.65*TIME),RESOLUTION).xyz*vec3(0.25,0.25,0.5);
+        
+        col += vec3(ghs*(1.0-0.299))*pow(clamp(vec3(3.0)*r,vec3(0.0),vec3(1.0)),vec3(2.0))*vec3(i);
+        col += vec3(ghs*(1.0-0.587))*pow(clamp(vec3(3.0)*g,vec3(0.0),vec3(1.0)),vec3(2.0))*vec3(i);
+        col += vec3(ghs*(1.0-0.114))*pow(clamp(vec3(3.0)*b,vec3(0.0),vec3(1.0)),vec3(2.0))*vec3(i);
 
 
         // TODO: add adjustment parameters to all these effects
