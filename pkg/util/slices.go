@@ -9,7 +9,7 @@ package util
 // 
 // DISCLAIMER: This func is yoinked from golang experimental branch: 
 // https://cs.opensource.google/go/x/exp/+/0b5c67f0:slices/slices.go;l=156
-func DeleteFromSlice[S ~[]E, E any](s S, i, j int) S {
+func DelFromSlice[S ~[]E, E any](s S, i, j int) S {
 	return append(s[:i], s[j:]...)
 }
 

@@ -47,7 +47,7 @@ func main() {
     defer rl.CloseAudioDevice()
 
     // gui
-    gui.Init()
+    gui.InitBackend()
 
     // raygui
     rg.SetStyle(rg.DEFAULT, rg.TEXT_COLOR_NORMAL, 0x000000)
