@@ -109,13 +109,29 @@ func backend_button(button Button) {
         font_scale = v.(float32)
     }
 
+	btn_color_normal := rl.Blue
+    if v, ok := style["background"]; ok && v != nil {
+        btn_color_normal = v.(rl.Color)
+    }
+
+	btn_color_hovered := rl.SkyBlue
+    if v, ok := style["background-hovered"]; ok && v != nil {
+        btn_color_hovered = v.(rl.Color)
+    }
+
+	btn_color_pressed := rl.DarkBlue
+    if v, ok := style["background-pressed"]; ok && v != nil {
+        btn_color_pressed = v.(rl.Color)
+    }
+
+
 	// determine appropriate colors based on current interaction state
-	btn_color := rl.Blue
+    btn_color := btn_color_normal
 	switch button.state {
 	case ButtonStateHovered:
-		btn_color = rl.SkyBlue
+		btn_color = btn_color_hovered
 	case ButtonStatePressed:
-		btn_color = rl.DarkBlue
+		btn_color = btn_color_pressed
 	}
 
 	bounds := rl.NewRectangle(button.position.X, button.position.Y, button.size.X, button.size.Y)
