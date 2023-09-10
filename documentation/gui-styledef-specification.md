@@ -3,7 +3,7 @@
 
 This document provides a specification for various style properties, their expected formats, and their associated data types.
 
-### 1. Font Color
+### Font Color
 
 **Property Name:** `color`
 
@@ -17,7 +17,7 @@ This document provides a specification for various style properties, their expec
 
 ---
 
-### 2. Font
+### Font
 
 **Property Name:** `font`
 
@@ -29,7 +29,7 @@ This document provides a specification for various style properties, their expec
 
 ---
 
-### 3. Font Scale
+### Font Scale
 
 **Property Name:** `font-scale`
 
@@ -41,7 +41,7 @@ This document provides a specification for various style properties, their expec
 
 ---
 
-### 4. Background Color
+### Background Color
 
 **Property Name:** `background`
 
@@ -52,6 +52,46 @@ This document provides a specification for various style properties, their expec
 **Example:** `color:255,0,0,255`
 
 **Associated Data Type:** `raylib.Color`
+
+---
+
+### Background Color Hover
+
+**Property Name:** `background-hover`
+
+**Format:** `R,G,B,A`
+
+- **R, G, B, A:** Integer values from 0 to 255, indicating the red, green, blue and alpha components respectively.
+
+**Example:** `color:255,0,0,255`
+
+**Associated Data Type:** `raylib.Color`
+
+---
+
+### Background Color Pressed
+
+**Property Name:** `background-pressed`
+
+**Format:** `R,G,B,A`
+
+- **R, G, B, A:** Integer values from 0 to 255, indicating the red, green, blue and alpha components respectively.
+
+**Example:** `color:255,0,0,255`
+
+**Associated Data Type:** `raylib.Color`
+
+---
+
+### Debugging Flag
+
+**Property Name:** `debug`
+
+**Format:** A boolean value, indicating whether the widget should draw debugging information.
+
+**Example:** `debug:true`
+
+**Associated Data Type:** `bool`
 
 ---
 

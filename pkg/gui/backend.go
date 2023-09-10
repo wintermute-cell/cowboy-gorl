@@ -34,13 +34,18 @@ func backend_label(label Label) {
         font = Gbs.fonts[f.(string)]
     }
 
+    font_scale := float32(1.0)
+    if v, ok := style["font-scale"]; ok && v != nil {
+        font_scale = v.(float32)
+    }
+
 
 	rl.DrawTextEx(
 		font,
 		label.text,
 		label.position,
-		float32(font.BaseSize),
-		float32(font.BaseSize/10),
+		float32(font.BaseSize)*font_scale,
+		float32(font.BaseSize/10)*font_scale,
 		color,
 	)
 }
@@ -87,6 +92,23 @@ func backend_scroll_panel_finalize(scroll_panel ScrollPanel) {
 }
 
 func backend_button(button Button) {
+    style := parseStyleDef(button.style_info)
+
+    color := rl.Black
+    if c, ok := style["color"]; ok && c != nil {
+        color = c.(rl.Color)
+    }
+
+    font := Gbs.fonts["default"]
+    if f, ok := style["font"]; ok && f != nil {
+        font = Gbs.fonts[f.(string)]
+    }
+
+    font_scale := float32(1.0)
+    if v, ok := style["font-scale"]; ok && v != nil {
+        font_scale = v.(float32)
+    }
+
 	// determine appropriate colors based on current interaction state
 	btn_color := rl.Blue
 	switch button.state {
@@ -98,7 +120,14 @@ func backend_button(button Button) {
 
 	bounds := rl.NewRectangle(button.position.X, button.position.Y, button.size.X, button.size.Y)
 	rl.DrawRectangleRec(bounds, btn_color)
-	rl.DrawText(button.text, int32(button.position.X), int32(button.position.Y), Gbs.fonts["default"].BaseSize, rl.White)
+	rl.DrawTextEx(
+		font,
+		button.text,
+		button.position,
+		float32(font.BaseSize)*font_scale,
+		float32(font.BaseSize/10)*font_scale,
+		color,
+	)
 }
 
 func backend_button_finalize(button Button) {

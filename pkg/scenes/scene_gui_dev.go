@@ -3,6 +3,7 @@ package scenes
 import (
 	"cowboy-gorl/pkg/entities"
 	"cowboy-gorl/pkg/gui"
+	"cowboy-gorl/pkg/logging"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -26,13 +27,17 @@ func (scn *GuiDevScene) Init() {
 	scn.g = gui.NewGui()
 
 	// gui elements
-    label := gui.NewLabel("retained mode widget", rl.NewVector2(16, 64), "font:alagard|debug:true")
-	btn := gui.NewButton("retained button", rl.NewVector2(16, 96), rl.NewVector2(15*6, 16), func(_ gui.ButtonState) {}, "")
+    label := gui.NewLabel("retained mode widget", rl.NewVector2(16, 64), "font:alagard")
+    btn_callback := func (s gui.ButtonState) {
+        logging.Info("%v", s)
+    }
+	btn := gui.NewButton("retained button", rl.NewVector2(16, 96), rl.NewVector2(15*6, 16), btn_callback, "")
 
     scroll_panel := gui.NewScrollPanel(
         rl.NewRectangle(10, 48, 620, 400),
         rl.NewRectangle(10, 48, 620, 2000),
         "debug:false|background:200,200,200,255")
+
 	scn.g.AddWidget(scroll_panel)
 	scroll_panel.AddChild(label)
 	scroll_panel.AddChild(btn)

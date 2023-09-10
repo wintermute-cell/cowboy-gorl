@@ -143,14 +143,15 @@ func (button *Button) update_button() {
 		if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
 			// button released, do the button action
 			button.state = ButtonStateReleased
+			button.callback(button.state)
 		}
 	}
 }
 
 // constructor
 func NewButton(text string, position, size rl.Vector2, callback func(ButtonState), style_info string) *Button {
-	// NOTE: The code below won't work out, since data only flows logic -> rendering,
-	// and the font is a part of the rendering.
+    // NOTE: The commented code below won't work out, since data only flows
+    // logic -> rendering, and the font is a part of the rendering.
 	//
 	//if size == rl.Vector2Zero() {
 	//	// NOTE: this might have to be changed if we use custom spacings (using MeasureTextEx)
@@ -290,7 +291,6 @@ func doRecursiveDraw(container Container) {
 		case *Button:
 			w.update_button()
 			backend_button(*w)
-			w.callback(w.state)
 			backend_button_finalize(*w)
 		case *ScrollPanel:
 			w.update_scroll_panel()

@@ -13,9 +13,11 @@ parseStyleDefinition converts a string of style definitions into a map represent
 Input format: "property:value|property2:value2|...".
 
 Note:
+
 - If a value itself contains colons, the entire value after the first colon is
 considered as the value. For example, "url:http:\/\/example.com" will be parsed
 as {"url": "http:\/\/example.com"}.
+
 - Extra spaces between properties, colons, and values are trimmed in the output.
 */
 func parseStyleDef(style_definition string) map[string]any {
@@ -30,56 +32,56 @@ func parseStyleDef(style_definition string) map[string]any {
 	style_map := make(map[string]any)
 
 	// Define conversion functions
-	converters := map[string]func(string) any {
-        "color": func(value string) any {
-            rgba := strings.Split(value, ",")
-            if len(rgba) != 4 {
-                logging.Warning("Invalid color format for value: %v", value)
+    converters := make(map[string]func(string)any)
+
+    converters["color"] = func(value string) any {
+        rgba := strings.Split(value, ",")
+        if len(rgba) != 4 {
+            logging.Warning("Invalid color format for value: %v", value)
+            return nil
+        }
+
+        var result [4]uint8
+        for i, v := range rgba {
+            f, err := strconv.Atoi(v) // directly parse to int
+            if err != nil || f < 0 || f > 255 { 
+                logging.Warning("Invalid color component in value: %v", value)
                 return nil
             }
+            result[i] = uint8(f)
+        }
+        return rl.NewColor(result[0], result[1], result[2], result[3])
+    }
 
-            var result [4]uint8
-            for i, v := range rgba {
-                f, err := strconv.Atoi(v) // directly parse to int
-                if err != nil || f < 0 || f > 255 { 
-                    logging.Warning("Invalid color component in value: %v", value)
-                    return nil
-                }
-                result[i] = uint8(f)
-            }
-            return rl.NewColor(result[0], result[1], result[2], result[3])
-        },
-        "background": func(value string) any {
-            rgba := strings.Split(value, ",")
-            if len(rgba) != 4 {
-                logging.Warning("Invalid color format for value: %v", value)
-                return nil
-            }
+    converters["background"] = converters["color"]
 
-            var result [4]uint8
-            for i, v := range rgba {
-                f, err := strconv.Atoi(v) // directly parse to int
-                if err != nil || f < 0 || f > 255 { 
-                    logging.Warning("Invalid color component in value: %v", value)
-                    return nil
-                }
-                result[i] = uint8(f)
-            }
-            return rl.NewColor(result[0], result[1], result[2], result[3])
-        },
-		"font": func(value string) any {
-			return value // already a string
-		},
-		"debug": func(value string) any {
-            b, err := strconv.ParseBool(value)
-            if err != nil{
-                logging.Warning("Invalid bool value: %v", value)
-            }
-            return b
-		},
-		// add more converters here as needed
-	}
+    converters["background-hover"] = converters["color"]
 
+    converters["background-pressed"] = converters["color"]
+
+    converters["font"] = func(value string) any {
+        return value // already a string
+    }
+
+    converters["font-scale"] = func(value string) any {
+        s, err := strconv.ParseFloat(value, 32)
+        if err != nil {
+            logging.Warning("Invalid float value: %v", value)
+        }
+        return float32(s)
+    }
+
+    converters["debug"] = func(value string) any {
+        b, err := strconv.ParseBool(value)
+        if err != nil{
+            logging.Warning("Invalid bool value: %v", value)
+        }
+        return b
+    }
+    // add more converters here as needed
+
+    // iterate over all property:value pairs, and try to apply the appropriate
+    // converter function.
 	for _, pair := range pairs {
 		if pair == "" {
 			logging.Warning("Found empty pair in gui styledef!")
