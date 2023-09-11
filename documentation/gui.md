@@ -1,26 +1,47 @@
 <!-- LTeX: language=en-US -->
 # GUI
 
-<!--toc:start-->
-- [GUI](#gui)
-  - [Available Widgets](#available-widgets)
-    - [BaseWidget](#basewidget)
-    - [Label](#label)
-    - [Button](#button)
-    - [Scroll Panel](#scroll-panel)
-  - [Internal Implementation](#internal-implementation)
-    - [How to create a new Widgets](#how-to-create-a-new-widgets)
-- [Available Widgets](#available-widgets)
-- [How to create a new Widget](#how-to-create-a-new-widget)
-<!--toc:end-->
+## Abstract Structure
+The `gui` package is split into two logical parts: The logic processing
+(registering button clicks, moving the scroll panel, etc.) in `pkg/gui/gui.go`
+and the rendering (drawing colored buttons, rendering text in different fonts,
+providing styling resources, etc.) in `pkg/gui/backend.go`.
+
+This means that `gui` code flows like this:
+```
+Define gui Widget in scene (pass position, size, etc. and styling info)
+->
+Gui widgets functionality is processed (reacting to user input) and the state
+of the Widget is updated.
+->
+The Widget, along with its current state is passed on to the backend, where it
+is drawn. The style info provided in the first step will also be unpacked here,
+and can be interpreted by the backend.
+```
+
+Let's look at the `Button` Widget for example. This is an excerpt of the
+`doRecursiveDraw()` function:
+```go
+case *Button:
+    w.update_button() // <- logical update
+    backend_button(*w) // <- backend render step
+    // a component with children might draw its children here,
+    // to be able to draw below and above its children.
+    backend_button_finalize(*w) // <- another backend render step
+```
+(Here, `w` is a pointer to a `Button` widget.)
+
+> [!NOTE]
+> All styling resources, such as fonts, icons, etc. are to be provided by
+> `/pkg/gui/backend.go`
 
 ## Usage
-TODO
 
 ### Available Widgets
 
 #### BaseWidget
-This is not a real Widget. It provides core properties, and is inherited by every other Widget listed below.
+This is not a real Widget. It provides core properties, and is inherited by
+every other Widget listed below.
 
 **Properties**:
 - `position`: A Vector2 storing the position of the Widget.
@@ -125,46 +146,102 @@ func doRecursiveDraw(container Container) {
 As one may see, every container Widget type (one that has its own children),
 must call `doRecursiveDraw()` on its own children.
 
-### Updating and Drawing
-Each type of Widget has two main stages. The **update** and the **draw**.
-While the **update** function is typically located in `pkg/gui/gui.go`, as it
-is a rigid implementation of how the Widget should behave, the **draw**
-function is relegated to the `pkg/gui/backend.go` file. This backend may be
-swapped out with an alternative implementation.
-
-Let's look at the `Button` Widget for example. This is an excerpt of the `doRecursiveDraw()` function:
-```go
-    case *Button:
-        w.update_button()
-        backend_button(*w)
-        backend_button_finalize(*w)
-```
-(Here, `w` is a pointer to a `Button` widget.)
-
-First comes the logical **update**, the `w.update_button()` function. It has a
-pointer receiver, as it is able to modify the state of the button widget (which
-is saved in the button struct itself, as `button.state`).
-
-Then come to calls to the drawing backend: `backend_button(*w)` (notice that
-the button is passed as a value; the draw functions will not modify state) and
-then `backend_button_finalize(*w)`. These two steps may not be important for a
-button, but are unavoidable in other cases.
-
-If we look at `ScrollPanel` for example:
-```go
-    case *ScrollPanel:
-        w.update_scroll_panel()
-        backend_scroll_panel(*w)
-        doRecursiveDraw(*w.container) // draw the panels children
-        backend_scroll_panel_finalize(*w)
-```
-We can see that the `scrollPanels` children are drawn in between these steps.
-This allows `backend_scroll_panel()` to begin a scissor-mode, and
-`backend_scroll_panel_finalize()` to end that scissor-mode.
-
-
 ### How to create a new Widget
-TODO
+1. Define the widget in `pkg/gui/gui.go`:
+```go
+// ----------------
+//    MY WIDGET   |
+// ----------------
+
+// widget definiton
+type MyWidget struct {
+	BaseWidget // Every widget must inherit BaseWidget
+	style_info string // Every widget must have a style_info field
+
+    // here you can add more fields you Widget might need,
+    // such as a callback function for a button, or general state information
+    // for example.
+}
+
+// update function
+func (my_widget *MyWidget) update_my_widget() {
+    // here you can perform general Widget functionality, and modify the state
+    // of the Widget accordingly. For example checking for a mouse click in
+    // a button, and if one is registered, calling the callback and setting the
+    // buttons state to pressed, so it can be rendered in a "pressed" color
+    // later.
+}
+
+// constructor
+func NewMyWidget(/* taking in all required information for MyWidget */) *MyWidget {
+	return &MyWidget{
+        // Fill out the required fields
+    }
+}
+
+// Now may come any additional functions the Widget might require, such as an
+// AddChild() function for a container widget for example.
+```
+
+2. After that, implement a rendering function in `pkg/gui/backend.go`:
+```go 
+// not taking in a pointer, this step will only draw, not affect state!
+func backend_my_widget(my_widget MyWidget) {
+    style := parseStyleDef(label.style_info) // first, unpack the styling information if you need it
+
+    // an example for using the provided styling info
+    color := rl.Black // we choose a default fallback value
+    if c, ok := style["color"]; ok && c != nil { // we check if the field is present in the style map
+        color = c.(rl.Color) // and we overwrite the fallback with the given style
+    }
+
+    // Now we draw the Widget according to our needs (optionally respecting
+    // some or all style properties)
+    rl.DrawSomething(...)
+}
+
+// we may also have another backend function, in case we need to draw to steps.
+func backend_my_widget_finalize(my_widget MyWidget) {
+	// implement more drawing logic
+}
+```
+
+3. The last step is to add the new Widget to the `doRecursiveDraw()` function
+in `pkg/gui/gui.go`.
+```go
+func doRecursiveDraw(container Container) {
+	for _, widget := range container.Children {
+		switch w := any(widget).(type) {
+		case *Label:
+			w.update_label()
+			backend_label(*w)
+			backend_label_finalize(*w)
+        /* ... other widgets ... */
+		case *ScrollPanel:
+			w.update_scroll_panel()
+			backend_scroll_panel(*w)
+			doRecursiveDraw(*w.container)
+			backend_scroll_panel_finalize(*w)
+        /* ... other widgets ... */
+
+        case *MyWidget:                 // <==== our new widget!
+            w.update_my_widget() // first, running the widget functionality
+			backend_my_widget(*w) // then, draw the widget
+			doRecursiveDraw(*w.container) // optionally, draw children
+			backend_my_widget_finalize(*w) // optionally, do another draw step
+
+        /* ... other widgets ... */
+```
+
+
 
 ### Swapping out the backend
-TODO describe contract, styledefs, etc
+The entire implementation of `pkg/gui/backend.go` can be swapped out, following
+this contract:
+
+1. The backend must provide all required resources, such as fonts, icons, etc.
+2. The backend may or may not respect styling information passed by the widgets.
+(read the [Styledef Docs](/documentation/gui-styledef.md).)
+3. The backend must contain a `backend_<widget-name>(w Widget)` function, and a 
+`backend_<widget-name>_finalize(w Widget)` function for **every** Widget!
+4. That's it.
