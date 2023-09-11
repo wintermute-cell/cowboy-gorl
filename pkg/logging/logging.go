@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-    "runtime"
-    "strconv"
+	"runtime"
+	"strconv"
 )
 
 type Log struct {
@@ -30,11 +30,11 @@ func assertInstanceExists() {
 }
 
 // callerInfo retrieves the filename and line number of the log-function-caller.
-// we need this since as we proxy our logging over this module, the 
+// we need this since as we proxy our logging over this module, the
 // log.Lshortfile information is lost. This function retrieves basically the
 // same information, just a little deeper in the callstack.
 func callerInfo() string {
-    _, file, line, ok := runtime.Caller(2) // 2 levels up the call stack to get the caller of Info function
+	_, file, line, ok := runtime.Caller(2) // 2 levels up the call stack to get the caller of Info function
 	if !ok {
 		return "unknown:0"
 	}
@@ -83,7 +83,7 @@ func Init(log_path string) {
 // using the 'INFO:' specifier.
 func Info(format string, v ...any) {
 	assertInstanceExists()
-    caller := callerInfo()
+	caller := callerInfo()
 	log_instance.infoLogger.Printf("%s: "+format, append([]interface{}{caller}, v...)...)
 }
 
@@ -91,7 +91,7 @@ func Info(format string, v ...any) {
 // using the 'WARN:' specifier.
 func Warning(format string, v ...any) {
 	assertInstanceExists()
-    caller := callerInfo()
+	caller := callerInfo()
 	log_instance.warningLogger.Printf("%s: "+format, append([]interface{}{caller}, v...)...)
 }
 
@@ -99,7 +99,7 @@ func Warning(format string, v ...any) {
 // using the 'ERRO:' specifier.
 func Error(format string, v ...any) {
 	assertInstanceExists()
-    caller := callerInfo()
+	caller := callerInfo()
 	log_instance.errorLogger.Printf("%s: "+format, append([]interface{}{caller}, v...)...)
 }
 
@@ -107,7 +107,7 @@ func Error(format string, v ...any) {
 // using the 'FATL:' specifier, and calls os.Exit(1) afterwards.
 func Fatal(format string, v ...any) {
 	assertInstanceExists()
-    caller := callerInfo()
+	caller := callerInfo()
 	log_instance.fatalLogger.Printf("%s: "+format, append([]interface{}{caller}, v...)...)
-    os.Exit(1)
+	os.Exit(1)
 }

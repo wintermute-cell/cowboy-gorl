@@ -27,16 +27,16 @@ func (scn *GuiDevScene) Init() {
 	scn.g = gui.NewGui()
 
 	// gui elements
-    label := gui.NewLabel("retained mode widget", rl.NewVector2(16, 64), "font:alagard|font-scale:2.0")
-    btn_callback := func (s gui.ButtonState) {
-        logging.Info("%v", s)
-    }
-    btn := gui.NewButton("retained button", rl.NewVector2(16, 96), rl.NewVector2(15*6, 16), btn_callback, "background-pressed:180,10,10,255")
+	label := gui.NewLabel("retained mode widget", rl.NewVector2(16, 64), "font:alagard|font-scale:2.0")
+	btn_callback := func(s gui.ButtonState) {
+		logging.Info("%v", s)
+	}
+	btn := gui.NewButton("retained button", rl.NewVector2(16, 96), rl.NewVector2(15*6, 16), btn_callback, "background-pressed:180,10,10,255")
 
-    scroll_panel := gui.NewScrollPanel(
-        rl.NewRectangle(10, 48, 620, 400),
-        rl.NewRectangle(10, 48, 620, 2000),
-        "debug:false|background:200,200,200,255")
+	scroll_panel := gui.NewScrollPanel(
+		rl.NewRectangle(10, 48, 620, 400),
+		rl.NewRectangle(10, 48, 620, 2000),
+		"debug:false|background:200,200,200,255")
 
 	scn.g.AddWidget(scroll_panel)
 	scroll_panel.AddChild(label)

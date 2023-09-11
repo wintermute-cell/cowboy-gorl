@@ -32,7 +32,7 @@ import (
 type RenderState struct {
 	TargetTex          rl.RenderTexture2D
 	CeilTex            rl.RenderTexture2D
-	Backbuffer    rl.RenderTexture2D
+	Backbuffer         rl.RenderTexture2D
 	Accumulationbuffer rl.RenderTexture2D
 	Blurbuffer         rl.RenderTexture2D
 	PingPongCounter    int32
@@ -47,7 +47,7 @@ type RenderState struct {
 	Accumulateshader    rl.Shader
 	Blendshader         rl.Shader
 
-    tex1locs map[rl.Shader]int32
+	tex1locs map[rl.Shader]int32
 
 	lastScreenHeight int32
 }
@@ -81,7 +81,7 @@ func Init(render_width int, render_height int) {
 	rl.SetTextureFilter(Rs.CeilTex.Texture, rl.FilterBilinear)
 
 	// create a number of helper buffers for performing multiple render passes
-    // to achieve the accumulation effect of the crt shader
+	// to achieve the accumulation effect of the crt shader
 	Rs.Backbuffer = rl.LoadRenderTexture(ceilX, ceilY)
 	rl.SetTextureFilter(Rs.Backbuffer.Texture, rl.FilterBilinear)
 
@@ -127,11 +127,10 @@ func Init(render_width int, render_height int) {
 		logging.Error("Failed to load CRT blend shader!")
 	}
 
-    // use a map to store the texture1 locations
-    Rs.tex1locs = make(map[rl.Shader]int32)
-    Rs.tex1locs[Rs.Accumulateshader] = rl.GetShaderLocation(Rs.Accumulateshader, "texture1")
-    Rs.tex1locs[Rs.Blendshader] = rl.GetShaderLocation(Rs.Blendshader, "texture1")
-
+	// use a map to store the texture1 locations
+	Rs.tex1locs = make(map[rl.Shader]int32)
+	Rs.tex1locs[Rs.Accumulateshader] = rl.GetShaderLocation(Rs.Accumulateshader, "texture1")
+	Rs.tex1locs[Rs.Blendshader] = rl.GetShaderLocation(Rs.Blendshader, "texture1")
 
 	logging.Info("Custom Rendering Environment initialized.")
 }
@@ -210,8 +209,8 @@ func EndCustomRender() {
 	// we need to separate World and GUI into individual render textures.
 	if settings.CurrentSettings().EnableCrtEffect {
 		rl.SetShaderValue(Rs.Crtshader, Rs.Crtshader_loc_time, []float32{float32(rl.GetTime())}, rl.ShaderUniformFloat)
-        // TODO: add a toggle setting between the full shader with accumulate
-        // and a "lite" version without accumulation
+		// TODO: add a toggle setting between the full shader with accumulate
+		// and a "lite" version without accumulation
 		renderPass(&Rs.Accumulationbuffer, nil, &Rs.Blurbuffer, &Rs.Blurshader)
 		renderPass(&Rs.CeilTex, &Rs.Blurbuffer, &Rs.Accumulationbuffer, &Rs.Accumulateshader)
 		renderPass(&Rs.CeilTex, &Rs.Accumulationbuffer, &Rs.Backbuffer, &Rs.Blendshader)
@@ -253,7 +252,7 @@ func renderPass(tex0 *rl.RenderTexture2D, tex1 *rl.RenderTexture2D, dest *rl.Ren
 	if shader != nil {
 		rl.BeginShaderMode(*shader)
 		if tex1 != nil {
-            tex1_loc := Rs.tex1locs[*shader]
+			tex1_loc := Rs.tex1locs[*shader]
 			rl.SetShaderValueTexture(*shader, tex1_loc, tex1.Texture)
 		}
 	}

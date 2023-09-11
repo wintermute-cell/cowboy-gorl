@@ -18,18 +18,18 @@ import (
 )
 
 type SceneManager struct {
-	scenes        map[string]Scene
+	scenes         map[string]Scene
 	enabled_scenes map[string]bool
-	scene_order   []string // slice to maintain order, since map is unordered
+	scene_order    []string // slice to maintain order, since map is unordered
 }
 
 // Create a new SceneManager. A SceneManager will automatically take care of
 // your Scenes (calling their Init(), Deinit(), Draw(), DrawGUI() functions).
 func newSceneManager() *SceneManager {
 	return &SceneManager{
-		scenes:        make(map[string]Scene),
+		scenes:         make(map[string]Scene),
 		enabled_scenes: make(map[string]bool),
-		scene_order:   make([]string, 0),
+		scene_order:    make([]string, 0),
 	}
 }
 
@@ -111,39 +111,39 @@ func (sm *SceneManager) DisableScene(name string) {
 
 // Disable all Scenes that are currently enabled.
 func (sm *SceneManager) DisableAllScenes() {
-    for _, name := range sm.scene_order {
+	for _, name := range sm.scene_order {
 		if sm.enabled_scenes[name] {
-            sm.scenes[name].Deinit()
-            sm.enabled_scenes[name] = false
+			sm.scenes[name].Deinit()
+			sm.enabled_scenes[name] = false
 		}
-    }
+	}
 }
 
 // Disable all Scenes that are currently enabled, except for the ones specified
 // by name in the `exception_slice` parameter.
 func (sm *SceneManager) DisableAllScenesExcept(exception_slice []string) {
-    for _, name := range sm.scene_order {
-		if sm.enabled_scenes[name]  && !util.SliceContains(exception_slice, name) {
-            sm.scenes[name].Deinit()
-            sm.enabled_scenes[name] = false
+	for _, name := range sm.scene_order {
+		if sm.enabled_scenes[name] && !util.SliceContains(exception_slice, name) {
+			sm.scenes[name].Deinit()
+			sm.enabled_scenes[name] = false
 		}
-    }
+	}
 }
 
 // Call the Draw() functions of all the registered Scenes in their defined order.
 func (sm *SceneManager) DrawScenes() {
-    for _, name := range sm.scene_order {
+	for _, name := range sm.scene_order {
 		if sm.enabled_scenes[name] {
 			sm.scenes[name].Draw()
 		}
-    }
+	}
 }
 
 // Call the DrawGUI() functions of all the registered Scenes in their defined order.
 func (sm *SceneManager) DrawScenesGUI() {
-    for _, name := range sm.scene_order {
+	for _, name := range sm.scene_order {
 		if sm.enabled_scenes[name] {
 			sm.scenes[name].DrawGUI()
 		}
-    }
+	}
 }

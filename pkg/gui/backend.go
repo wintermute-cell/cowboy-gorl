@@ -16,29 +16,28 @@ func InitBackend() {
 	Gbs = GuiBackendState{}
 	Gbs.fonts = make(map[string]rl.Font)
 	Gbs.fonts["default"] = rl.GetFontDefault()
-    Gbs.fonts["alagard"] = rl.LoadFont("fonts/alagard.png")
+	Gbs.fonts["alagard"] = rl.LoadFont("fonts/alagard.png")
 }
 
 // BACKEND FUNCTIONS
 
 func backend_label(label Label) {
-    style := parseStyleDef(label.style_info)
+	style := parseStyleDef(label.style_info)
 
-    color := rl.Black
-    if c, ok := style["color"]; ok && c != nil {
-        color = c.(rl.Color)
-    }
+	color := rl.Black
+	if c, ok := style["color"]; ok && c != nil {
+		color = c.(rl.Color)
+	}
 
-    font := Gbs.fonts["default"]
-    if f, ok := style["font"]; ok && f != nil {
-        font = Gbs.fonts[f.(string)]
-    }
+	font := Gbs.fonts["default"]
+	if f, ok := style["font"]; ok && f != nil {
+		font = Gbs.fonts[f.(string)]
+	}
 
-    font_scale := float32(1.0)
-    if v, ok := style["font-scale"]; ok && v != nil {
-        font_scale = v.(float32)
-    }
-
+	font_scale := float32(1.0)
+	if v, ok := style["font-scale"]; ok && v != nil {
+		font_scale = v.(float32)
+	}
 
 	rl.DrawTextEx(
 		font,
@@ -55,29 +54,29 @@ func backend_label_finalize(label Label) {
 }
 
 func backend_scroll_panel(scroll_panel ScrollPanel) {
-    style := parseStyleDef(scroll_panel.style_info)
+	style := parseStyleDef(scroll_panel.style_info)
 
-    draw_debug := false
-    if v, ok := style["debug"]; ok && v != nil {
-        draw_debug = v.(bool)
-    }
+	draw_debug := false
+	if v, ok := style["debug"]; ok && v != nil {
+		draw_debug = v.(bool)
+	}
 
-    bg_color := rl.NewColor(0,0,0,0)
-    if v, ok := style["background"]; ok && v != nil {
-        bg_color = v.(rl.Color)
-    }
+	bg_color := rl.NewColor(0, 0, 0, 0)
+	if v, ok := style["background"]; ok && v != nil {
+		bg_color = v.(rl.Color)
+	}
 
-    if draw_debug {
-        // this represents the full bounds shifted by the scroll position
-        // (useful for visualizing the scroll concept)
-        virt_fbounds := scroll_panel.full_bounds
-        virt_fbounds.X += scroll_panel.state.scroll_position.X
-        virt_fbounds.Y += scroll_panel.state.scroll_position.Y
+	if draw_debug {
+		// this represents the full bounds shifted by the scroll position
+		// (useful for visualizing the scroll concept)
+		virt_fbounds := scroll_panel.full_bounds
+		virt_fbounds.X += scroll_panel.state.scroll_position.X
+		virt_fbounds.Y += scroll_panel.state.scroll_position.Y
 
-        rl.DrawRectangleRec(virt_fbounds, rl.Blue)
-    }
+		rl.DrawRectangleRec(virt_fbounds, rl.Blue)
+	}
 
-    rl.DrawRectangleRec(scroll_panel.visible_bounds, bg_color)
+	rl.DrawRectangleRec(scroll_panel.visible_bounds, bg_color)
 
 	rl.BeginScissorMode(
 		int32(scroll_panel.visible_bounds.X),
@@ -92,41 +91,40 @@ func backend_scroll_panel_finalize(scroll_panel ScrollPanel) {
 }
 
 func backend_button(button Button) {
-    style := parseStyleDef(button.style_info)
+	style := parseStyleDef(button.style_info)
 
-    color := rl.Black
-    if c, ok := style["color"]; ok && c != nil {
-        color = c.(rl.Color)
-    }
+	color := rl.Black
+	if c, ok := style["color"]; ok && c != nil {
+		color = c.(rl.Color)
+	}
 
-    font := Gbs.fonts["default"]
-    if f, ok := style["font"]; ok && f != nil {
-        font = Gbs.fonts[f.(string)]
-    }
+	font := Gbs.fonts["default"]
+	if f, ok := style["font"]; ok && f != nil {
+		font = Gbs.fonts[f.(string)]
+	}
 
-    font_scale := float32(1.0)
-    if v, ok := style["font-scale"]; ok && v != nil {
-        font_scale = v.(float32)
-    }
+	font_scale := float32(1.0)
+	if v, ok := style["font-scale"]; ok && v != nil {
+		font_scale = v.(float32)
+	}
 
 	btn_color_normal := rl.Blue
-    if v, ok := style["background"]; ok && v != nil {
-        btn_color_normal = v.(rl.Color)
-    }
+	if v, ok := style["background"]; ok && v != nil {
+		btn_color_normal = v.(rl.Color)
+	}
 
 	btn_color_hovered := rl.SkyBlue
-    if v, ok := style["background-hovered"]; ok && v != nil {
-        btn_color_hovered = v.(rl.Color)
-    }
+	if v, ok := style["background-hovered"]; ok && v != nil {
+		btn_color_hovered = v.(rl.Color)
+	}
 
 	btn_color_pressed := rl.DarkBlue
-    if v, ok := style["background-pressed"]; ok && v != nil {
-        btn_color_pressed = v.(rl.Color)
-    }
-
+	if v, ok := style["background-pressed"]; ok && v != nil {
+		btn_color_pressed = v.(rl.Color)
+	}
 
 	// determine appropriate colors based on current interaction state
-    btn_color := btn_color_normal
+	btn_color := btn_color_normal
 	switch button.state {
 	case ButtonStateHovered:
 		btn_color = btn_color_hovered

@@ -150,8 +150,8 @@ func (button *Button) update_button() {
 
 // constructor
 func NewButton(text string, position, size rl.Vector2, callback func(ButtonState), style_info string) *Button {
-    // NOTE: The commented code below won't work out, since data only flows
-    // logic -> rendering, and the font is a part of the rendering.
+	// NOTE: The commented code below won't work out, since data only flows
+	// logic -> rendering, and the font is a part of the rendering.
 	//
 	//if size == rl.Vector2Zero() {
 	//	// NOTE: this might have to be changed if we use custom spacings (using MeasureTextEx)

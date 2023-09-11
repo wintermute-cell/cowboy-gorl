@@ -7,34 +7,32 @@ import (
 // This checks at compile time if the interface is implemented
 var _ Scene = (*TemplateScene)(nil)
 
-//
-//  Template Scene
-//
+// Template Scene
 type TemplateScene struct {
-    // Required fields
-    entity_manager *entities.EntityManager
+	// Required fields
+	entity_manager *entities.EntityManager
 
-    // Custom Fields
-    // Add fields here for any state that the scene should keep track of
-    // ...
+	// Custom Fields
+	// Add fields here for any state that the scene should keep track of
+	// ...
 }
 
 func (scn *TemplateScene) Init() {
-    // Required initialization
-    scn.entity_manager = entities.NewEntityManager()
+	// Required initialization
+	scn.entity_manager = entities.NewEntityManager()
 
-    // Initialization logic for the scene
-    // ...
+	// Initialization logic for the scene
+	// ...
 }
 
 func (scn *TemplateScene) Deinit() {
-    // De-initialization logic for the scene
+	// De-initialization logic for the scene
 }
 
 func (scn *TemplateScene) DrawGUI() {
-    // Draw the GUI for the scene
+	// Draw the GUI for the scene
 }
 
 func (scn *TemplateScene) Draw() {
-    // Draw the scene
+	// Draw the scene
 }

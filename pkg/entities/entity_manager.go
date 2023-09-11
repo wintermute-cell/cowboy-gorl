@@ -15,20 +15,20 @@ package entities
 import "cowboy-gorl/pkg/logging"
 
 type EntityManager struct {
-	entities        map[string]Entity
-    dependencies    map[string][]string
+	entities         map[string]Entity
+	dependencies     map[string][]string
 	enabled_entities map[string]bool
-	entity_order    []string // slice to maintain order, since map is unordered
+	entity_order     []string // slice to maintain order, since map is unordered
 }
 
 // Create a new EntityManager. A EntityManager will automatically take care of
 // your Entities (calling their Init(), Deinit(), Update() functions).
 func NewEntityManager() *EntityManager {
 	return &EntityManager{
-		entities:        make(map[string]Entity),
-        dependencies:   make(map[string][]string),
+		entities:         make(map[string]Entity),
+		dependencies:     make(map[string][]string),
 		enabled_entities: make(map[string]bool),
-		entity_order:    make([]string, 0),
+		entity_order:     make([]string, 0),
 	}
 }
 
@@ -38,7 +38,7 @@ func (em *EntityManager) RegisterEntity(name string, entity Entity, enable_immed
 		logging.Fatal("An entity with name \"%v\" is already registered.", name)
 	}
 	em.entities[name] = entity
-    em.dependencies[name] = dependencies
+	em.dependencies[name] = dependencies
 	em.entity_order = append(em.entity_order, name) // Add to the end by default
 
 	// immediately enable the entity
@@ -93,16 +93,16 @@ func (em *EntityManager) EnableEntity(name string) {
 		logging.Fatal("Entity with name %v not found.", name)
 	}
 
-    // Valiadate dependecies are enabled
-    missing_deps := []string{}
-    for _, dep := range em.dependencies[name] {
-        if !em.enabled_entities[dep] {
-            missing_deps = append(missing_deps, dep)
-        }
-    }
-    if len(missing_deps) > 0 {
-        logging.Fatal("Tried loading entity with name \"%v\" before some of its dependencies were loaded: %v", name, missing_deps)
-    }
+	// Valiadate dependecies are enabled
+	missing_deps := []string{}
+	for _, dep := range em.dependencies[name] {
+		if !em.enabled_entities[dep] {
+			missing_deps = append(missing_deps, dep)
+		}
+	}
+	if len(missing_deps) > 0 {
+		logging.Fatal("Tried loading entity with name \"%v\" before some of its dependencies were loaded: %v", name, missing_deps)
+	}
 
 	// Initialize the entity if it's not already enabled
 	if !em.enabled_entities[name] {

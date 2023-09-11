@@ -2,9 +2,9 @@ package gui
 
 import (
 	"cowboy-gorl/pkg/logging"
+	rl "github.com/gen2brain/raylib-go/raylib"
 	"strconv"
 	"strings"
-	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 /*
@@ -21,67 +21,67 @@ as {"url": "http:\/\/example.com"}.
 - Extra spaces between properties, colons, and values are trimmed in the output.
 */
 func parseStyleDef(style_definition string) map[string]any {
-    if style_definition == "" {
-        return make(map[string]any)
-    }
+	if style_definition == "" {
+		return make(map[string]any)
+	}
 
 	// remove potential leading/trailing pipe symbol
-    style_definition = strings.Trim(style_definition, "|")
+	style_definition = strings.Trim(style_definition, "|")
 
 	pairs := strings.Split(style_definition, "|")
 	style_map := make(map[string]any)
 
 	// Define conversion functions
-    converters := make(map[string]func(string)any)
+	converters := make(map[string]func(string) any)
 
-    converters["color"] = func(value string) any {
-        rgba := strings.Split(value, ",")
-        if len(rgba) != 4 {
-            logging.Warning("Invalid color format for value: %v", value)
-            return nil
-        }
+	converters["color"] = func(value string) any {
+		rgba := strings.Split(value, ",")
+		if len(rgba) != 4 {
+			logging.Warning("Invalid color format for value: %v", value)
+			return nil
+		}
 
-        var result [4]uint8
-        for i, v := range rgba {
-            f, err := strconv.Atoi(v) // directly parse to int
-            if err != nil || f < 0 || f > 255 { 
-                logging.Warning("Invalid color component in value: %v", value)
-                return nil
-            }
-            result[i] = uint8(f)
-        }
-        return rl.NewColor(result[0], result[1], result[2], result[3])
-    }
+		var result [4]uint8
+		for i, v := range rgba {
+			f, err := strconv.Atoi(v) // directly parse to int
+			if err != nil || f < 0 || f > 255 {
+				logging.Warning("Invalid color component in value: %v", value)
+				return nil
+			}
+			result[i] = uint8(f)
+		}
+		return rl.NewColor(result[0], result[1], result[2], result[3])
+	}
 
-    converters["background"] = converters["color"]
+	converters["background"] = converters["color"]
 
-    converters["background-hover"] = converters["color"]
+	converters["background-hover"] = converters["color"]
 
-    converters["background-pressed"] = converters["color"]
+	converters["background-pressed"] = converters["color"]
 
-    converters["font"] = func(value string) any {
-        return value // already a string
-    }
+	converters["font"] = func(value string) any {
+		return value // already a string
+	}
 
-    converters["font-scale"] = func(value string) any {
-        s, err := strconv.ParseFloat(value, 32)
-        if err != nil {
-            logging.Warning("Invalid float value: %v", value)
-        }
-        return float32(s)
-    }
+	converters["font-scale"] = func(value string) any {
+		s, err := strconv.ParseFloat(value, 32)
+		if err != nil {
+			logging.Warning("Invalid float value: %v", value)
+		}
+		return float32(s)
+	}
 
-    converters["debug"] = func(value string) any {
-        b, err := strconv.ParseBool(value)
-        if err != nil{
-            logging.Warning("Invalid bool value: %v", value)
-        }
-        return b
-    }
-    // add more converters here as needed
+	converters["debug"] = func(value string) any {
+		b, err := strconv.ParseBool(value)
+		if err != nil {
+			logging.Warning("Invalid bool value: %v", value)
+		}
+		return b
+	}
+	// add more converters here as needed
 
-    // iterate over all property:value pairs, and try to apply the appropriate
-    // converter function.
+	// iterate over all property:value pairs, and try to apply the appropriate
+	// converter function.
 	for _, pair := range pairs {
 		if pair == "" {
 			logging.Warning("Found empty pair in gui styledef!")

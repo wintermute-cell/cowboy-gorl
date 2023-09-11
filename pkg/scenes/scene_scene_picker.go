@@ -10,33 +10,31 @@ import (
 // This checks at compile time if the interface is implemented
 var _ Scene = (*ScenePickerScene)(nil)
 
-//
-//  ScenePicker Scene
-//
+// ScenePicker Scene
 type ScenePickerScene struct {
-    // Required fields
-    entity_manager *entities.EntityManager
+	// Required fields
+	entity_manager *entities.EntityManager
 
-    // Custom Fields
+	// Custom Fields
 }
 
 func (scn *ScenePickerScene) Init() {
-    // Required initialization
-    scn.entity_manager = entities.NewEntityManager()
+	// Required initialization
+	scn.entity_manager = entities.NewEntityManager()
 
-    // Initialization logic for the scene
-    // ...
+	// Initialization logic for the scene
+	// ...
 }
 
 func (scn *ScenePickerScene) Deinit() {
-    // De-initialization logic for the scene
+	// De-initialization logic for the scene
 }
 
 func (scn *ScenePickerScene) DrawGUI() {
-    if rg.Button(rl.NewRectangle(100, 100, 300, 32), "Animation Dev Scene") {
-        Sm.DisableAllScenesExcept([]string{"dev_menu"})
-        Sm.EnableScene("anim_dev")
-    }
+	if rg.Button(rl.NewRectangle(100, 100, 300, 32), "Animation Dev Scene") {
+		Sm.DisableAllScenesExcept([]string{"dev_menu"})
+		Sm.EnableScene("anim_dev")
+	}
 }
 
 func (scn *ScenePickerScene) Draw() {

@@ -11,16 +11,16 @@ import (
 )
 
 type number interface {
-    ~int32 | ~float32
+	~int32 | ~float32
 }
 
 type animatable interface {
-    number | bool | string
+	number | bool | string
 }
 
 type Keyframe[T animatable] struct {
 	Time  float32
-    Value T
+	Value T
 }
 
 type Animation[T animatable] struct {
@@ -41,13 +41,13 @@ func CreateAnimation[T animatable](duration float32) *Animation[T] {
 
 // Add a keyframe to the animation
 func (a *Animation[T]) AddKeyframe(variable *T, time float32, value T) {
-    // check if variable already exists...
+	// check if variable already exists...
 	if _, exists := a.variables[variable]; !exists {
-        // ... if not, create empty keyframe slice
+		// ... if not, create empty keyframe slice
 		a.variables[variable] = []Keyframe[T]{}
 	}
 	a.variables[variable] = append(a.variables[variable], Keyframe[T]{Time: time, Value: value})
-    // ensure the new keyframe is in the correct time location  
+	// ensure the new keyframe is in the correct time location
 	sort.Slice(a.variables[variable], func(i, j int) bool {
 		return a.variables[variable][i].Time < a.variables[variable][j].Time
 	})
@@ -66,7 +66,7 @@ func (a *Animation[T]) Update() {
 		return
 	}
 
-    // check if animation should repeat or stop
+	// check if animation should repeat or stop
 	if a.isLooping {
 		a.playTime = float32(math.Mod(float64(a.playTime), float64(a.duration)))
 	} else if a.playTime >= a.duration {
@@ -74,51 +74,51 @@ func (a *Animation[T]) Update() {
 		return
 	}
 
-    // interpolate animated variables
+	// interpolate animated variables
 	for variable, keyframes := range a.variables {
-        for i := 0; i < len(keyframes)-1; i++ {
-            // we iterate over all the keyframes until we find the pair of
-            // keyframes that the animation time is currently between.
-            // In the following example we will stop with i = 1, keyframes[i] = B
-            //          | A------B----------C |
-            //                        ^ 
-            //                    a.playTime
-            if a.playTime >= keyframes[i].Time && a.playTime <= keyframes[i+1].Time {
-                // we divide the time passed since B by the time from B to C,
-                // to find out the interpolation ratio between B and C.
-                r := (a.playTime - keyframes[i].Time) / (keyframes[i+1].Time - keyframes[i].Time)
+		for i := 0; i < len(keyframes)-1; i++ {
+			// we iterate over all the keyframes until we find the pair of
+			// keyframes that the animation time is currently between.
+			// In the following example we will stop with i = 1, keyframes[i] = B
+			//          | A------B----------C |
+			//                        ^
+			//                    a.playTime
+			if a.playTime >= keyframes[i].Time && a.playTime <= keyframes[i+1].Time {
+				// we divide the time passed since B by the time from B to C,
+				// to find out the interpolation ratio between B and C.
+				r := (a.playTime - keyframes[i].Time) / (keyframes[i+1].Time - keyframes[i].Time)
 
-                // Holy shit this is ugly, but I'm pretty damn certain there is
-                // no better way...
-                switch any(variable).(type) {
-                case *int32:
-                    rhs := int32(any(keyframes[i+1].Value).(int32))
-                    lhs := int32(any(keyframes[i].Value).(int32))
-                    // bit ugly with all the casting, but were basically just
-                    // rounding the rhs-lhs difference up or down, around the middle
-                    var v any = (lhs + int32(math.Round(float64(r*float32(rhs-lhs)))))
-                    *variable = v.(T)
-                case *float32:
-                    rhs := float32(any(keyframes[i+1].Value).(float32))
-                    lhs := float32(any(keyframes[i].Value).(float32))
-                    var v any = (lhs + float32(r*float32(rhs-lhs)))
-                    *variable = v.(T)
-                // NOTE: bool and string might need some tweaking, so that the
-                // value is switched in the middle, and not just the lhs is taken
-                case *bool:
-                    lhs := bool(any(keyframes[i].Value).(bool))
-                    var v any = lhs
-                    *variable = v.(T)
-                case *string:
-                    lhs := string(any(keyframes[i].Value).(string))
-                    var v any = lhs
-                    *variable = v.(T)
-                default:
-                    logging.Warning("Failed to match animation type during interpolation!")
-                }
-                break
-            }
-        }
+				// Holy shit this is ugly, but I'm pretty damn certain there is
+				// no better way...
+				switch any(variable).(type) {
+				case *int32:
+					rhs := int32(any(keyframes[i+1].Value).(int32))
+					lhs := int32(any(keyframes[i].Value).(int32))
+					// bit ugly with all the casting, but were basically just
+					// rounding the rhs-lhs difference up or down, around the middle
+					var v any = (lhs + int32(math.Round(float64(r*float32(rhs-lhs)))))
+					*variable = v.(T)
+				case *float32:
+					rhs := float32(any(keyframes[i+1].Value).(float32))
+					lhs := float32(any(keyframes[i].Value).(float32))
+					var v any = (lhs + float32(r*float32(rhs-lhs)))
+					*variable = v.(T)
+				// NOTE: bool and string might need some tweaking, so that the
+				// value is switched in the middle, and not just the lhs is taken
+				case *bool:
+					lhs := bool(any(keyframes[i].Value).(bool))
+					var v any = lhs
+					*variable = v.(T)
+				case *string:
+					lhs := string(any(keyframes[i].Value).(string))
+					var v any = lhs
+					*variable = v.(T)
+				default:
+					logging.Warning("Failed to match animation type during interpolation!")
+				}
+				break
+			}
+		}
 	}
 
 	a.playTime += rl.GetFrameTime()

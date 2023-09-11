@@ -26,7 +26,7 @@ type AnimationTestOreEntity struct {
 	special_click_sound rl.Sound
 	break_sound         rl.Sound
 	click_anim          *animation.Animation[float32]
-    click_particles     SpritesheetFxEntity
+	click_particles     SpritesheetFxEntity
 }
 
 func NewAnimationTestOreEntity(
@@ -70,7 +70,7 @@ func NewAnimationTestOreEntity(
 }
 
 func (ent *AnimationTestOreEntity) Init() {
-    // SHAKE ANIM ON CLICK
+	// SHAKE ANIM ON CLICK
 	ent.click_anim = animation.CreateAnimation[float32](0.25)
 	// Keyframes for X coordinate
 	ent.click_anim.AddKeyframe(&ent.position.X, 0.0, ent.position.X)
@@ -89,15 +89,15 @@ func (ent *AnimationTestOreEntity) Init() {
 	ent.click_anim.AddKeyframe(&ent.position.Y, 0.2, ent.position.Y-1)
 	ent.click_anim.AddKeyframe(&ent.position.Y, 0.25, ent.position.Y)
 
-    // PARTICLE ANIM ON CLICK
-    click_particles_sheet := rl.LoadTexture("sprites/resources/cluster_click_sheets/iron_click1/iron_click1_sheet.png")
-    ent.click_particles = NewSpritesheetFxEntity(
-        click_particles_sheet,
-        rl.NewVector2(64, 64),
-        10, 60,
-        rl.Vector2Zero(),
-        )
-    ent.click_particles.Init()
+	// PARTICLE ANIM ON CLICK
+	click_particles_sheet := rl.LoadTexture("sprites/resources/cluster_click_sheets/iron_click1/iron_click1_sheet.png")
+	ent.click_particles = NewSpritesheetFxEntity(
+		click_particles_sheet,
+		rl.NewVector2(64, 64),
+		10, 60,
+		rl.Vector2Zero(),
+	)
+	ent.click_particles.Init()
 }
 
 func (ent *AnimationTestOreEntity) Deinit() {
@@ -119,7 +119,7 @@ func (ent *AnimationTestOreEntity) Update() {
 	}
 
 	ent.click_anim.Update()
-    ent.click_particles.Update()
+	ent.click_particles.Update()
 }
 
 func (ent *AnimationTestOreEntity) handleClick() {
@@ -127,5 +127,5 @@ func (ent *AnimationTestOreEntity) handleClick() {
 	rand_int := rand.Intn(len(ent.click_sounds))
 	rl.PlaySound(ent.click_sounds[rand_int])
 	ent.click_anim.Play(false)
-    ent.click_particles.Play(rl.Vector2Subtract(rl.GetMousePosition(), rl.NewVector2(32,32)), false)
+	ent.click_particles.Play(rl.Vector2Subtract(rl.GetMousePosition(), rl.NewVector2(32, 32)), false)
 }
