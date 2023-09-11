@@ -28,6 +28,11 @@ Detailed Documentation on many different subjects can be found here:
 - [GUI](/documentation/gui.md)
 - [GUI Styledefs](/documentation/gui-styledef.md)
 
+## Assets in use
+A list of all external assets currently in use, and a short note on usage conditions / licensing.
+
+- [Azakaela Music Pack](https://azakaela.itch.io/azas-free-music-pack-2-wild-west-of-another-world) Under CC BY 4.0, credit 'Azakaela'
+
 ## Resources
 - Sounds
     - https://blipsounds.com/community-library/

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cowboy-gorl/pkg/audio"
 	"cowboy-gorl/pkg/gui"
 	"cowboy-gorl/pkg/logging"
 	"cowboy-gorl/pkg/render"
@@ -42,9 +43,14 @@ func main() {
 		settings.CurrentSettings().RenderHeight)
 	logging.Info("Custom rendering initialized.")
 
-	// initialize the audio device
-	rl.InitAudioDevice()
-	defer rl.CloseAudioDevice()
+	// initialize audio
+    audio.InitAudio()
+    defer audio.DeinitAudio()
+
+    // register audio tracks
+    audio.RegisterMusic("aza-tumbleweeds", "audio/music/azakaela/azaFMP2_field7_Tumbleweeds.ogg")
+    audio.RegisterMusic("aza-outwest", "audio/music/azakaela/azaFMP2_scene1_OutWest.ogg")
+    audio.RegisterMusic("aza-frontier", "audio/music/azakaela/azaFMP2_town_Frontier.ogg")
 
 	// gui
 	gui.InitBackend()
@@ -82,6 +88,8 @@ func main() {
 		rl.DrawGrid(10, 1.0)
 
 		rl.EndDrawing()
+
+        audio.Update()
 	}
 
 	scenes.Sm.DisableAllScenes()

@@ -1,8 +1,10 @@
-github.com/gen2brain/raylib-go/raygui v0.0.0-20230719211022-1083eace2049 h1:fk5RjxyLc/BiMoRmAaoTnqGSovyBFudKFBJS+RYbDOk=
-github.com/gen2brain/raylib-go/raygui v0.0.0-20230719211022-1083eace2049/go.mod h1:uYchFLZ2wwfI+gRV8i0qHk6DKk5ZL/6VNrY/Nmzw5Ps=
 github.com/gen2brain/raylib-go/raygui v0.0.0-20230826160040-f770ca098119 h1:x2S4giOQoJv6L7OKvgyN7EhqOPVbKT3prE23Bho96FQ=
 github.com/gen2brain/raylib-go/raygui v0.0.0-20230826160040-f770ca098119/go.mod h1:uYchFLZ2wwfI+gRV8i0qHk6DKk5ZL/6VNrY/Nmzw5Ps=
-github.com/gen2brain/raylib-go/raylib v0.0.0-20230719211022-1083eace2049 h1:fJeDPYJDyT+KeWKsIMbRlNcSgsQ2nZ4bJLwBraVA/xU=
-github.com/gen2brain/raylib-go/raylib v0.0.0-20230719211022-1083eace2049/go.mod h1:AwtGA3aTtYdezNxEVbfchaLw/z+CuRDh2Mlxy0FbBro=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20230826160040-f770ca098119 h1:sabx//RhPtejGJAPC0TLmUeP8OoNK93qaUy4i2f/fo0=
 github.com/gen2brain/raylib-go/raylib v0.0.0-20230826160040-f770ca098119/go.mod h1:AwtGA3aTtYdezNxEVbfchaLw/z+CuRDh2Mlxy0FbBro=
+github.com/segmentio/fasthash v1.0.3 h1:EI9+KE1EwvMLBWwjpRDc+fEM+prwxDYbslddQGtrmhM=
+github.com/segmentio/fasthash v1.0.3/go.mod h1:waKX8l2N8yckOgmSsXJi7x1ZfdKZ4x7KRMzBtS3oedY=
+github.com/zyedidia/generic v1.2.1 h1:Zv5KS/N2m0XZZiuLS82qheRG4X1o5gsWreGb0hR7XDc=
+github.com/zyedidia/generic v1.2.1/go.mod h1:ly2RBz4mnz1yeuVbQA/VFwGjK3mnHGRj1JuoG336Bis=
+golang.org/x/exp v0.0.0-20220218215828-6cf2b201936e h1:iWVPgObh6F4UDtjBLK51zsy5UHTPLQwCmsNjCsbKhQ0=
+golang.org/x/exp v0.0.0-20220218215828-6cf2b201936e/go.mod h1:lgLbSvA5ygNOMpwM/9anMpWVlVJ7Z+cHWq/eFuinpGE=

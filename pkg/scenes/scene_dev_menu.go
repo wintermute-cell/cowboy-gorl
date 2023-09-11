@@ -1,6 +1,7 @@
 package scenes
 
 import (
+	"cowboy-gorl/pkg/audio"
 	"cowboy-gorl/pkg/entities"
 	"cowboy-gorl/pkg/settings"
 
@@ -24,6 +25,7 @@ type DevMenuScene struct {
 func (scn *DevMenuScene) Init() {
 	// Required initialization
 	scn.entity_manager = entities.NewEntityManager()
+    audio.PlayMusicNow("aza-outwest")
 
 	// Initialization logic for the scene
 	// ...
