@@ -10,6 +10,7 @@ import (
 )
 
 type Log struct {
+	debugLogger   *log.Logger
 	infoLogger    *log.Logger
 	warningLogger *log.Logger
 	errorLogger   *log.Logger
@@ -71,12 +72,21 @@ func Init(log_path string) {
 		log.Printf("FAILED TO OPEN LOG FILE AT: %s, due to this error: %s", log_path, err)
 	}
 
+	log_instance.debugLogger = log.New(file, "DEBG: ", log.Ldate|log.Ltime)
 	log_instance.infoLogger = log.New(file, "INFO: ", log.Ldate|log.Ltime)
 	log_instance.warningLogger = log.New(file, "WARN: ", log.Ldate|log.Ltime)
 	log_instance.errorLogger = log.New(file, "ERRO: ", log.Ldate|log.Ltime)
 	log_instance.fatalLogger = log.New(file, "FATL: ", log.Ldate|log.Ltime)
 	// note: ERRO and FATL sounds dumb, but having the same length for every prefix
 	// improves readability
+}
+
+// Info writes to the log-file specified in the settings,
+// using the 'INFO:' specifier.
+func Debug(format string, v ...any) {
+	assertInstanceExists()
+	caller := callerInfo()
+	log_instance.debugLogger.Printf("%s: "+format, append([]interface{}{caller}, v...)...)
 }
 
 // Info writes to the log-file specified in the settings,
