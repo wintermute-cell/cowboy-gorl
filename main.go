@@ -1,6 +1,7 @@
 package main
 
 import (
+	"cowboy-gorl/pkg/gui"
 	"cowboy-gorl/pkg/logging"
 	"cowboy-gorl/pkg/render"
 	"cowboy-gorl/pkg/scenes"
@@ -45,6 +46,9 @@ func main() {
     rl.InitAudioDevice()
     defer rl.CloseAudioDevice()
 
+    // gui
+    gui.InitBackend()
+
     // raygui
     rg.SetStyle(rg.DEFAULT, rg.TEXT_COLOR_NORMAL, 0x000000)
     rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 24)
@@ -53,10 +57,9 @@ func main() {
     // ( don't forget to defer the Deinit()!!! )
     scenes.Sm.RegisterScene("dev", &scenes.DevScene{})
     scenes.Sm.RegisterScene("anim_dev", &scenes.AnimationDevScene{})
-    scenes.Sm.RegisterScene("scene_picker", &scenes.ScenePickerScene{})
+    scenes.Sm.RegisterScene("gui_dev", &scenes.GuiDevScene{})
     scenes.Sm.RegisterScene("dev_menu", &scenes.DevMenuScene{})
 
-    scenes.Sm.EnableScene("scene_picker")
     scenes.Sm.EnableScene("dev_menu")
 
 	// GAME LOOP

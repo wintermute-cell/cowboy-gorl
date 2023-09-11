@@ -22,8 +22,11 @@ TODO
 ## Detailed Documentation
 
 Detailed Documentation on many different subjects can be found here:
-- [Scripts](./documentation/scripts.md)
-- [Game Structure: Scenes & Entities](./documentation/scenes-and-entities.md)
+- [Scripts](/documentation/scripts.md)
+- [Game Structure: Scenes & Entities](/documentation/scenes-and-entities.md)
+- [Creating Scenes & Entities](/documentation/creating-scenes-and-entities.md)
+- [GUI](/documentation/gui.md)
+- [GUI Styledefs](/documentation/gui-styledef.md)
 
 ## Resources
 - Sounds

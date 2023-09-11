@@ -25,3 +25,6 @@ If no path is given, the following defaults apply:
 ./pkg/settings/settings.go
 ./assets/settings.json
 ```
+
+## create_scene.sh & create_entity.sh
+Please see [Using scripts for scene and entity creation](https://github.com/wintermute-cell/cowboy-gorl/blob/gui/documentation/creating-scenes-and-entities.md#recommended-using-scripts-for-creation)

@@ -27,7 +27,7 @@ run:
 	cd $(BUILD_PATH); ./$(PROJECT)-linux
 
 dev:
-	make build; make run
+	@make build && make run || echo "build failed!"
 
 clean:
 	rm -r $(BUILD_PATH)/*
