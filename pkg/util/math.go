@@ -41,3 +41,15 @@ func Clamp[T number](x, lower_bound, upper_bound T) T {
     v = Max[T](v, lower_bound)
     return v
 }
+
+// Round x to the nearest integer, either down if x < .5 or up if x >= .5.
+func Round[T number](x T) T {
+    integer, fraction := math.Modf(float64(x))
+    v := x
+    if fraction >= 0.5 {
+        v = T(integer) + T(1.0)
+    } else {
+        v = T(integer)
+    }
+    return v
+}

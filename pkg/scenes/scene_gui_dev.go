@@ -4,6 +4,7 @@ import (
 	"cowboy-gorl/pkg/entities"
 	"cowboy-gorl/pkg/gui"
 	"cowboy-gorl/pkg/logging"
+	"fmt"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -29,7 +30,9 @@ func (scn *GuiDevScene) Init() {
 	// gui elements
 	label := gui.NewLabel("retained mode widget", rl.NewVector2(16, 64), "font:alagard|font-scale:2.0")
 	btn_callback := func(s gui.ButtonState) {
-		logging.Info("%v", s)
+        if s == gui.ButtonStateReleased {
+            logging.Info("Button was pressed!")
+        }
 	}
 	btn := gui.NewButton("retained button", rl.NewVector2(16, 96), rl.NewVector2(15*6, 16), btn_callback, "background-pressed:180,10,10,255")
 
@@ -41,6 +44,27 @@ func (scn *GuiDevScene) Init() {
 	scn.g.AddWidget(scroll_panel)
 	scroll_panel.AddChild(label)
 	scroll_panel.AddChild(btn)
+
+    slider := gui.NewSlider(
+        0.0,
+        10.0,
+        5.0,
+        2.0,
+        rl.NewVector2(16, 128),
+        rl.NewVector2(180, 32),
+        rl.NewVector2(16, 32),
+        "",
+        )
+    slider_label := gui.NewLabel(
+        fmt.Sprintf("%f", 5.0),
+        rl.NewVector2(200, 128),
+        "font-scale:2.0",
+        )
+
+    slider.SetValueChangedCallback(func(new_value float32) {slider_label.SetText(fmt.Sprintf("%f",new_value))})
+
+    scroll_panel.AddChild(slider)
+    scroll_panel.AddChild(slider_label)
 }
 
 func (scn *GuiDevScene) Deinit() {

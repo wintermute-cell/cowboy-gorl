@@ -28,8 +28,10 @@ func (scn *DevMenuScene) Init() {
 
     scn.g = gui.NewGui()
     btn := gui.NewButton("Audio Dev Scene", rl.NewVector2(408, 4), rl.NewVector2(128, 32), func(s gui.ButtonState) {
-		Sm.DisableAllScenesExcept([]string{"dev_menu"})
-		Sm.EnableScene("audio_dev")
+        if s == gui.ButtonStateReleased {
+            Sm.DisableAllScenesExcept([]string{"dev_menu"})
+            Sm.EnableScene("audio_dev")
+        }
     }, "")
     scn.g.AddWidget(btn)
 

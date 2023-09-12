@@ -39,24 +39,58 @@ func (scn *AudioDevScene) Init() {
 
 	// gui elements
 	btn_cb_playlist_main_menu := func(s gui.ButtonState) {
-		audio.SetCurrentPlaylist("main-menu", true)
+        if s == gui.ButtonStateReleased {
+            audio.SetCurrentPlaylist("main-menu", true)
+        }
 	}
     btn_playlist_main_menu := gui.NewButton(
         "Playlist: main-menu",
         rl.NewVector2(16, 96),
-        rl.NewVector2(15*6, 16),
+        rl.NewVector2(15*8, 16),
         btn_cb_playlist_main_menu,
         "background-pressed:180,10,10,255")
 
 	btn_cb_playlist_boss_music := func(s gui.ButtonState) {
-		audio.SetCurrentPlaylist("boss-music", true)
+        if s == gui.ButtonStateReleased {
+            audio.SetCurrentPlaylist("boss-music", true)
+        }
 	}
     btn_playlist_boss_music := gui.NewButton(
         "Playlist: boss-music",
         rl.NewVector2(16, 124),
-        rl.NewVector2(15*6, 16),
+        rl.NewVector2(15*8, 16),
         btn_cb_playlist_boss_music,
         "background-pressed:180,10,10,255")
+
+    slider_global_volume := gui.NewSlider(
+        0.0, 1.0, audio.GetGlobalVolume(), 0.1,
+        rl.NewVector2(200, 96),
+        rl.NewVector2(200, 16),
+        rl.NewVector2(16, 16),
+        "")
+    slider_global_volume.SetValueChangedCallback(func(new_value float32) {audio.SetGlobalVolume(new_value)})
+    label_global_volume := gui.NewLabel("", rl.NewVector2(420, 96), "")
+    label_global_volume.WatchFloat32(slider_global_volume.GetCurrentValuePointer(), "%.2f")
+
+    slider_music_volume := gui.NewSlider(
+        0.0, 1.0, audio.GetMusicVolume(), 0.1,
+        rl.NewVector2(200, 128),
+        rl.NewVector2(200, 16),
+        rl.NewVector2(16, 16),
+        "")
+    slider_music_volume.SetValueChangedCallback(func(new_value float32) {audio.SetMusicVolume(new_value)})
+    label_music_volume := gui.NewLabel("", rl.NewVector2(420, 128), "")
+    label_music_volume.WatchFloat32(slider_music_volume.GetCurrentValuePointer(), "%.2f")
+
+    slider_sfx_volume := gui.NewSlider(
+        0.0, 1.0, audio.GetSFXVolume(), 0.1,
+        rl.NewVector2(200, 150),
+        rl.NewVector2(200, 16),
+        rl.NewVector2(16, 16),
+        "")
+    slider_sfx_volume.SetValueChangedCallback(func(new_value float32) {audio.SetSFXVolume(new_value)})
+    label_sfx_volume := gui.NewLabel("", rl.NewVector2(420, 150), "")
+    label_sfx_volume.WatchFloat32(slider_sfx_volume.GetCurrentValuePointer(), "%.2f")
 
 	scroll_panel := gui.NewScrollPanel(
 		rl.NewRectangle(10, 48, 620, 400),
@@ -66,6 +100,12 @@ func (scn *AudioDevScene) Init() {
 	scn.g.AddWidget(scroll_panel)
 	scroll_panel.AddChild(btn_playlist_main_menu)
 	scroll_panel.AddChild(btn_playlist_boss_music)
+	scroll_panel.AddChild(slider_global_volume)
+	scroll_panel.AddChild(slider_music_volume)
+	scroll_panel.AddChild(slider_sfx_volume)
+    scroll_panel.AddChild(label_global_volume)
+    scroll_panel.AddChild(label_music_volume)
+    scroll_panel.AddChild(label_sfx_volume)
 }
 
 func (scn *AudioDevScene) Deinit() {

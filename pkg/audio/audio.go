@@ -239,10 +239,20 @@ func SetGlobalVolume(new_volume float32) {
     a.global_volume = new_volume
 }
 
+// Get the Global Volume
+func GetGlobalVolume() float32 {
+    return a.global_volume
+}
+
 // Set the Music Volume to a value between 0.0 and 1.0
 func SetMusicVolume(new_volume float32) {
     new_volume = util.Clamp(new_volume, 0.0, 1.0)
     a.music_volume = new_volume
+}
+
+// Get the Music Volume
+func GetMusicVolume() float32 {
+    return a.music_volume
 }
 
 // Set the SFX Volume to a value between 0.0 and 1.0
@@ -251,9 +261,19 @@ func SetSFXVolume(new_volume float32) {
     a.sfx_volume = new_volume
 }
 
+// Get the SFX Volume
+func GetSFXVolume() float32 {
+    return a.sfx_volume
+}
+
 // Set the Fade Time for Music Tracks in seconds
 func SetMusicFade(fade_secs float32) {
     a.music_fade_secs = fade_secs
+}
+
+// Get the Fade Time for Music Tracks in seconds
+func GetMusicFade() float32 {
+    return a.music_fade_secs
 }
 
 // PLAYBACK

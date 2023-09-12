@@ -93,7 +93,7 @@ func backend_scroll_panel_finalize(scroll_panel ScrollPanel) {
 func backend_button(button Button) {
 	style := parseStyleDef(button.style_info)
 
-	color := rl.Black
+	color := rl.White
 	if c, ok := style["color"]; ok && c != nil {
 		color = c.(rl.Color)
 	}
@@ -146,4 +146,37 @@ func backend_button(button Button) {
 
 func backend_button_finalize(button Button) {
 	// nothing to do here
+}
+
+func backend_slider(slider Slider) {
+	style := parseStyleDef(slider.style_info)
+
+	color := rl.White
+	if c, ok := style["color"]; ok && c != nil {
+		color = c.(rl.Color)
+	}
+
+    background := rl.Blue
+	background_normal := rl.Blue
+	if v, ok := style["background"]; ok && v != nil {
+		background_normal = v.(rl.Color)
+	}
+
+    // TODO: hover and drag state for slider
+    background = background_normal
+
+    // draw slider background
+    rl.DrawRectangle(int32(slider.position.X), int32(slider.position.Y), int32(slider.size.X), int32(slider.size.Y), background)
+
+    // draw handle
+    rl.DrawRectangle(
+        int32(slider.handle_position.X),
+        int32(slider.handle_position.Y),
+        int32(slider.handle_size.X),
+        int32(slider.handle_size.Y),
+        color)
+}
+
+func backend_slider_finalize(slider Slider) {
+    // nothing to do here
 }
