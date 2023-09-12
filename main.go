@@ -66,6 +66,7 @@ func main() {
 	scenes.Sm.RegisterScene("anim_dev", &scenes.AnimationDevScene{})
 	scenes.Sm.RegisterScene("gui_dev", &scenes.GuiDevScene{})
 	scenes.Sm.RegisterScene("dev_menu", &scenes.DevMenuScene{})
+    scenes.Sm.RegisterScene("audio_dev", &scenes.AudioDevScene{})
 
 	scenes.Sm.EnableScene("dev_menu")
 

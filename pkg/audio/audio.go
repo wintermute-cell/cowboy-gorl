@@ -183,17 +183,36 @@ func setWaitingMusic(name string) {
 
 // Load a music file from the given path, register it with the given name.
 func RegisterMusic(name, path string) {
+    if _, ok := a.music_tracks[name]; ok {
+        logging.Warning("Tried to register music track for a name that already exists: %v", name)
+        return
+    }
     m := rl.LoadMusicStream(path)
+    if m.Stream == (rl.AudioStream{}) {
+        logging.Error("Failed to load music audio stream for name: \"%v\" and path: %v", name, path)
+    }
     m.Looping = false // disable looping by default, this causes issues with fading tracks and looping is done by our player anyway.
     a.music_tracks[name] = m
 }
 
 // Load a sound file from the given path, register it with the given name.
 func RegisterSound(name, path string) {
-    a.sfx_tracks[name] = rl.LoadSound(path)
+    if _, ok := a.sfx_tracks[name]; ok {
+        logging.Warning("Tried to register sfx track for a name that already exists: %v", name)
+        return
+    }
+    s := rl.LoadSound(path)
+    if s.Stream == (rl.AudioStream{}) {
+        logging.Error("Failed to load sound audio stream for name: \"%v\" and path: %v", name, path)
+    }
+    a.sfx_tracks[name] = s
 }
 
 func CreatePlaylist(name string, p []string) {
+    if _, ok := a.music_playlists[name]; ok {
+        logging.Warning("Tried to register playlist for a name that already exists: %v", name)
+        return
+    }
     a.music_playlists[name] = p
 }
 
@@ -308,4 +327,5 @@ func SetCurrentPlaylist(name string, fade_current bool) {
     if _, ok := a.music_tracks[a.curr_playing_music_name]; ok && fade_current {
         forceFadeOutNow()
     }
+    logging.Info("Current playlist set to: %v", name)
 }

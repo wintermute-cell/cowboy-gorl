@@ -24,11 +24,12 @@ type DevMenuScene struct {
 func (scn *DevMenuScene) Init() {
 	// Required initialization
 	scn.entity_manager = entities.NewEntityManager()
-    audio.SetCurrentPlaylist("main-menu")
+    audio.SetCurrentPlaylist("main-menu", true)
 
     scn.g = gui.NewGui()
-    btn := gui.NewButton("test", rl.NewVector2(408, 4), rl.NewVector2(64, 32), func(s gui.ButtonState) {
-        audio.PlayMusicNowFade("aza-frontier")
+    btn := gui.NewButton("Audio Dev Scene", rl.NewVector2(408, 4), rl.NewVector2(128, 32), func(s gui.ButtonState) {
+		Sm.DisableAllScenesExcept([]string{"dev_menu"})
+		Sm.EnableScene("audio_dev")
     }, "")
     scn.g.AddWidget(btn)
 
