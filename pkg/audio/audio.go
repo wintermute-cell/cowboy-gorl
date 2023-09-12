@@ -3,9 +3,13 @@ package audio
 import (
 	"cowboy-gorl/pkg/logging"
 	"cowboy-gorl/pkg/util"
+    "time"
+    "math/rand"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
+
+type playlist []string
 
 type audio struct {
     // volume
@@ -16,12 +20,24 @@ type audio struct {
 
     // tracks
     music_tracks map[string]rl.Music
+    music_playlists map[string]playlist
     sfx_tracks map[string]rl.Sound
 
     // playback
     music_fade_secs float32
-    fading_music_track_name string
+    play_timer float32 // we need this, since GetMusicTimePlayed is a little inaccurate and resets to 0 too early
     curr_playing_music_name string
+    curr_playlist string
+
+    is_music_waiting bool
+    waiting_music_name string // this stores the name of a track that is scheduled to play next
+
+    is_delaying  bool       // flag indicating if we're in the delay state between tracks
+    delay_timer  float32    // a timer to count the delay
+    delay_secs   float32    // configurable delay time in seconds between fade-out and fade-in
+
+    force_fade_out bool
+    force_fade_out_len float32 // this is a helper, replacing GetMusicTimeLength with a shorter time.
 }
 
 var a audio
@@ -37,8 +53,16 @@ func InitAudio() {
         music_volume: 1.0,
         sfx_volume: 1.0,
         music_tracks: make(map[string]rl.Music),
+        music_playlists: make(map[string]playlist),
         sfx_tracks: make(map[string]rl.Sound),
         music_fade_secs: 5.0,
+        play_timer: 0.0,
+        is_music_waiting: false,
+        waiting_music_name: "",
+        is_delaying: false,
+        delay_secs: 0.0,
+        force_fade_out: false,
+        force_fade_out_len: 0.0,
     }
 }
 
@@ -56,54 +80,98 @@ func DeinitAudio() {
 
 func Update() {
     if !a.is_mute {
-        // if were currently playing music...
-        if curr_mus, ok := a.music_tracks[a.curr_playing_music_name]; ok {
-            rl.UpdateMusicStream(curr_mus)
 
-            // get the remaining playtime
-            time_remaining := rl.GetMusicTimeLength(curr_mus) - rl.GetMusicTimePlayed(curr_mus)
+        // Handle the delay between tracks
+        if a.is_delaying {
+            a.delay_timer += rl.GetFrameTime()
+            if a.delay_timer >= a.delay_secs {
+                a.is_delaying = false
+                a.delay_timer = 0.0
+                a.play_timer = 0.0
 
-            // fade in the current music
-            if rl.GetMusicTimePlayed(curr_mus) <= a.music_fade_secs {
-                rl.SetMusicVolume(curr_mus, a.music_volume * a.global_volume * (rl.GetMusicTimePlayed(curr_mus) / a.music_fade_secs))
-            } else {
-                // apply the configured music volume
-                rl.SetMusicVolume(curr_mus, a.music_volume * a.global_volume)
-            }
-
-            // determine if the current music needs to be faded out
-            if time_remaining <= a.music_fade_secs {
-                logging.Info("Starting to fade out music: %v", a.curr_playing_music_name)
-                // set the current track to the fade var and the new one to the playing var
-                a.fading_music_track_name = a.curr_playing_music_name
+                // Start playing and fading in the next track
                 new_mus := getNextMusicTrack()
-                rl.SetMusicVolume(a.music_tracks[new_mus], a.music_volume * a.global_volume)
                 a.curr_playing_music_name = new_mus
-                // TODO: fading into the same track breaks the system. add functonality to just loop a track (but still fade the loops).
                 rl.PlayMusicStream(a.music_tracks[new_mus])
                 logging.Info("Starting to play music: %v", new_mus)
             }
+            return  // No more processing needed if we're delaying
         }
 
-        // fade out the last music track
-        if fading_mus, ok := a.music_tracks[a.fading_music_track_name]; ok {
-            rl.UpdateMusicStream(fading_mus)
-            if rl.IsMusicStreamPlaying(fading_mus) {
-                fade_time_remaining := rl.GetMusicTimeLength(fading_mus) - rl.GetMusicTimePlayed(fading_mus)
-                logging.Debug("%v", fade_time_remaining)
-                rl.SetMusicVolume(fading_mus, a.music_volume * a.global_volume * util.Max((fade_time_remaining / a.music_fade_secs), 0.01))
-                if fade_time_remaining <= 0.01 {
-                    logging.Info("Finished fading out music: %v", a.fading_music_track_name)
-                    rl.StopMusicStream(fading_mus)
+        // if were currently playing music...
+        if curr_mus, ok := a.music_tracks[a.curr_playing_music_name]; ok {
+            rl.UpdateMusicStream(curr_mus)
+            a.play_timer += rl.GetFrameTime()
+
+            // get the remaining playtime
+            time_remaining := rl.GetMusicTimeLength(curr_mus) - a.play_timer
+
+            // fade in the current music
+            if a.play_timer <= a.music_fade_secs {
+                rl.SetMusicVolume(curr_mus, a.music_volume * a.global_volume * (a.play_timer / a.music_fade_secs))
+            } else if time_remaining <= a.music_fade_secs || a.force_fade_out {
+                // handle the fading out logic here...
+                fade_time_remaining := rl.GetMusicTimeLength(curr_mus) - a.play_timer
+                if a.force_fade_out { // use an alternative calculation if forced to fade out
+                    fade_time_remaining = a.force_fade_out_len - a.play_timer
                 }
+                rl.SetMusicVolume(curr_mus, a.music_volume * a.global_volume * util.Max((fade_time_remaining / a.music_fade_secs), 0.01))
+
+                // when the fade out is complete
+                if fade_time_remaining <= 0.01 {
+                    logging.Info("Finished fading out music: %v", a.curr_playing_music_name)
+                    rl.StopMusicStream(curr_mus)
+                    a.force_fade_out = false
+                    a.play_timer = 0.0
+                    a.is_delaying = true
+                }
+            } else {
+                // if neither fading in, nor out apply the configured music
+                // volume (in case configuration changes)
+                rl.SetMusicVolume(curr_mus, a.music_volume * a.global_volume)
             }
+        } else if _, ok := a.music_playlists[a.curr_playlist]; ok {
+            // if we have a playlist, but are not playing
+            a.curr_playing_music_name = getNextMusicTrack()
+            rl.PlayMusicStream(a.music_tracks[a.curr_playing_music_name])
+            logging.Info("Dry starting playlist: %v", a.curr_playlist)
         }
+        
     }
 }
 
 func getNextMusicTrack() string {
-    // TODO
-    return "aza-tumbleweeds"
+    // if there is a track waiting, prioritize that
+    if a.is_music_waiting {
+        a.is_music_waiting = false
+        logging.Info("Next music from waiting: %v ", a.waiting_music_name)
+        return a.waiting_music_name
+    }
+
+    // select random name from a.curr_playlist
+    if p, ok := a.music_playlists[a.curr_playlist]; ok {
+        rand.Seed(time.Now().Unix()) // initialize global pseudo random generator
+        m := p[rand.Intn(len(p))]
+        if m == a.curr_playing_music_name {
+            // try once more to somewhat avoid playing the same track
+            m = p[rand.Intn(len(p))]
+        }
+        logging.Info("Next music: %v from playlist: %v", m, a.curr_playlist)
+        return m
+    } else {
+        logging.Error("Current playlist invalid, attempted to select from invalid playlist: %v", a.curr_playlist)
+        return ""
+    }
+}
+
+func forceFadeOutNow() {
+    a.force_fade_out = true
+    a.force_fade_out_len = rl.GetMusicTimePlayed(a.music_tracks[a.curr_playing_music_name]) + a.music_fade_secs
+}
+
+func setWaitingMusic(name string) {
+    a.is_music_waiting = true
+    a.waiting_music_name = name
 }
 
 // ----------------
@@ -111,7 +179,7 @@ func getNextMusicTrack() string {
 // ----------------
 
 
-// LOADING TRACKS
+// LOADING TRACKS & PLAYLISTS
 
 // Load a music file from the given path, register it with the given name.
 func RegisterMusic(name, path string) {
@@ -123,6 +191,10 @@ func RegisterMusic(name, path string) {
 // Load a sound file from the given path, register it with the given name.
 func RegisterSound(name, path string) {
     a.sfx_tracks[name] = rl.LoadSound(path)
+}
+
+func CreatePlaylist(name string, p []string) {
+    a.music_playlists[name] = p
 }
 
 // CONFIGURATION
@@ -169,40 +241,71 @@ func SetMusicFade(fade_secs float32) {
 
 // Play a sound that has been registered with "name"
 func PlaySound(name string) {
-    s := a.sfx_tracks[name]
-    rl.SetSoundVolume(s, a.sfx_volume * a.global_volume)
-    rl.PlaySound(s)
+    PlaySoundEx(name, 1.0, 1.0, 0.5)
 }
 
-// PlaySound with extended parameters.
+/*
+PlaySound with extended parameters.
+
+- name: the name of the sound to play
+
+- volume: the volume to play the sound at (0.0 - 1.0)
+
+- pitch: the pitch to play the sound at (default: 1.0)
+
+- pan: the pan to play the sound at (default: 0.5)
+*/
 func PlaySoundEx(name string, volume, pitch, pan float32) {
-    s := a.sfx_tracks[name]
-    rl.SetSoundPitch(s, pitch)
-    rl.SetSoundPan(s, pan)
-    rl.SetSoundVolume(s, a.sfx_volume * a.global_volume * volume)
+    if s, ok := a.sfx_tracks[name]; ok {
+        rl.SetSoundPitch(s, pitch)
+        rl.SetSoundPan(s, pan)
+        rl.SetSoundVolume(s, a.sfx_volume * a.global_volume * volume)
 
-    rl.PlaySound(s)
+        rl.PlaySound(s)
 
-    // reset sound properties
-    rl.SetSoundVolume(s, a.sfx_volume * a.global_volume)
-    rl.SetSoundPitch(s, 0)
-    rl.SetSoundPan(s, 0)
+        // reset sound properties
+        rl.SetSoundVolume(s, a.sfx_volume * a.global_volume)
+        rl.SetSoundPitch(s, 0)
+        rl.SetSoundPan(s, 0)
+    } else {
+        logging.Warning("Attempted to play sound that is not registered: %v", name)
+    }
 }
 
 // Instantly start playing a music track that has been registered with "name".
 func PlayMusicNow(name string) {
+    if _, ok := a.music_tracks[name]; !ok {
+        logging.Warning("Attempted to play music that is not registered: %v", name)
+        return
+    }
     // stop the currently playing track
     rl.StopMusicStream(a.music_tracks[a.curr_playing_music_name])
-
     // set the correct volume
     rl.SetMusicVolume(a.music_tracks[name], a.music_volume * a.global_volume)
     a.curr_playing_music_name = name
     rl.PlayMusicStream(a.music_tracks[name])
+    logging.Info("Playing music now: %v", name)
 }
 
 // Start playing a music track that has been registered with "name" after
 // fading out the currently playing track.
 func PlayMusicNowFade(name string) {
-    // TODO, set some 'fade now' flag and line up next track
-    
+    if _, ok := a.music_tracks[name]; !ok {
+        logging.Warning("Attempted to play music that is not registered: %v", name)
+        return
+    }
+    setWaitingMusic(name)
+    forceFadeOutNow()
+    logging.Info("Force fading into music now: %v", name)
+}
+
+// Sets the current playlist to the specified name, optionally fading out the
+// currently playing track (should there be one playing).
+func SetCurrentPlaylist(name string, fade_current bool) {
+    a.curr_playlist = name
+
+    // if music is playing, fade it out
+    if _, ok := a.music_tracks[a.curr_playing_music_name]; ok && fade_current {
+        forceFadeOutNow()
+    }
 }
