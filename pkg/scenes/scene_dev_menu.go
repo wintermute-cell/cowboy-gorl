@@ -1,7 +1,9 @@
 package scenes
 
 import (
+	"cowboy-gorl/pkg/audio"
 	"cowboy-gorl/pkg/entities"
+	"cowboy-gorl/pkg/gui"
 	"cowboy-gorl/pkg/settings"
 
 	rg "github.com/gen2brain/raylib-go/raygui"
@@ -16,14 +18,22 @@ type DevMenuScene struct {
 	// Required fields
 	entity_manager *entities.EntityManager
 
-	// Custom Fields
-	// Add fields here for any state that the scene should keep track of
-	// ...
+    g *gui.Gui
 }
 
 func (scn *DevMenuScene) Init() {
 	// Required initialization
 	scn.entity_manager = entities.NewEntityManager()
+    audio.SetCurrentPlaylist("main-menu", true)
+
+    scn.g = gui.NewGui()
+    btn := gui.NewButton("Audio Dev Scene", rl.NewVector2(408, 4), rl.NewVector2(128, 32), func(s gui.ButtonState) {
+        if s == gui.ButtonStateReleased {
+            Sm.DisableAllScenesExcept([]string{"dev_menu"})
+            Sm.EnableScene("audio_dev")
+        }
+    }, "")
+    scn.g.AddWidget(btn)
 
 	// Initialization logic for the scene
 	// ...
@@ -34,6 +44,7 @@ func (scn *DevMenuScene) Deinit() {
 }
 
 func (scn *DevMenuScene) DrawGUI() {
+    scn.g.Draw()
 	original_text_size := rg.GetStyle(rg.DEFAULT, rg.TEXT_SIZE)
 	rg.SetStyle(rg.DEFAULT, rg.TEXT_SIZE, 16)
 

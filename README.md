@@ -27,6 +27,12 @@ Detailed Documentation on many different subjects can be found here:
 - [Creating Scenes & Entities](/documentation/creating-scenes-and-entities.md)
 - [GUI](/documentation/gui.md)
 - [GUI Styledefs](/documentation/gui-styledef.md)
+- [Audio](/documentation/audio.md)
+
+## Assets in use
+A list of all external assets currently in use, and a short note on usage conditions / licensing.
+
+- [Azakaela Music Pack](https://azakaela.itch.io/azas-free-music-pack-2-wild-west-of-another-world) Under CC BY 4.0, credit 'Azakaela'
 
 ## Resources
 - Sounds
