@@ -52,6 +52,9 @@ func main() {
     audio.RegisterMusic("aza-outwest", "audio/music/azakaela/azaFMP2_scene1_OutWest.ogg")
     audio.RegisterMusic("aza-frontier", "audio/music/azakaela/azaFMP2_town_Frontier.ogg")
     audio.CreatePlaylist("main-menu", []string{"aza-tumbleweeds", "aza-outwest", "aza-frontier"})
+    audio.SetGlobalVolume(0.6)
+    audio.SetMusicVolume(0.3)
+    audio.SetSFXVolume(0.6)
 
 	// gui
 	gui.InitBackend()
@@ -74,8 +77,8 @@ func main() {
 	for !rl.WindowShouldClose() {
 		rl.ClearBackground(rl.Black) // clearing the whole background, even behind the main rendertex
 
-		render.BeginCustomRender()
 		rl.BeginDrawing()
+		render.BeginCustomRender()
 
 		rl.ClearBackground(rl.DarkGreen) // clear the main rendertex
 
